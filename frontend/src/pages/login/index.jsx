@@ -1,35 +1,49 @@
 import { useGoogleLogin } from "@react-oauth/google";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 
 function Login() {
-  // 1. Criamos a função de login diretamente aqui na página
+  const { user, signin } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
+      setErrorMessage("");
+      setLoading(true);
       console.log("Token recebido do Google:", tokenResponse.access_token);
-      
+
       try {
-        // Envia o token obtido para a rota do seu backend Express
         const response = await fetch("http://localhost:3000/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: tokenResponse.access_token })
+          body: JSON.stringify({ token: tokenResponse.access_token }),
         });
 
         if (!response.ok) {
-          throw new Error("Erro ao autenticar com o servidor backend.");
+          const body = await response.text();
+          throw new Error(body || "Erro ao autenticar com o servidor backend.");
         }
 
         const dadosUsuario = await response.json();
         console.log("Usuário autenticado e salvo no banco!", dadosUsuario);
-        
-        // Salva os dados retornados pelo seu MySQL (idUsuario, nome, email)
-        localStorage.setItem("@NotFat:user", JSON.stringify(dadosUsuario));
 
-        // Se você usar react-router-dom, pode descomentar e usar o redirecionamento aqui:
-        // window.location.href = "/dashboard"; 
-
+        signin(dadosUsuario);
+        navigate("/");
       } catch (error) {
         console.error("Erro na comunicação com o backend:", error);
+        setErrorMessage(error?.message || "Não foi possível fazer login. Tente novamente.");
+      } finally {
+        setLoading(false);
       }
     },
     onError: (error) => {
@@ -89,9 +103,10 @@ function Login() {
         </p>
 
         {/* 2. Seu botão original modificado com o evento onClick para ativar o login */}
-        <button 
+        <button
           onClick={() => login()}
-          className="flex items-center justify-center gap-3 w-full max-w-xs py-3 px-6 rounded-xl border border-white/20 bg-transparent text-white text-sm font-semibold cursor-pointer hover:bg-white/10 transition-all"
+          disabled={loading}
+          className="flex items-center justify-center gap-3 w-full max-w-xs py-3 px-6 rounded-xl border border-white/20 bg-transparent text-white text-sm font-semibold cursor-pointer hover:bg-white/10 transition-all disabled:cursor-not-allowed disabled:opacity-60"
         >
           <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
@@ -101,6 +116,12 @@ function Login() {
           </svg>
           Continuar com Google
         </button>
+        {loading && (
+          <p className="mt-4 text-sm text-white/80">Entrando... aguarde.</p>
+        )}
+        {errorMessage && (
+          <p className="mt-4 text-sm text-red-400">{errorMessage}</p>
+        )}
       </div>
     </div>
   );

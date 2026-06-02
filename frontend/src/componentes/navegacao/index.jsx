@@ -1,4 +1,9 @@
+import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+
 export function Navigation() {
+  const { user, signout } = useAuth();
+
   return (
     <aside
       id="navigation"
@@ -21,23 +26,35 @@ export function Navigation() {
       <nav className="mt-4 lg:mt-8">
         <ul className="flex flex-wrap gap-2 lg:flex-col lg:gap-3">
           <li>
-            <a
-              href="#"
+            <Link
+              to="/"
               className="block rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/15"
             >
               Refeições
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
+            <Link
+              to="/profile"
               className="block rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-green-100 transition hover:bg-white/10"
             >
               Perfil
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
+
+      {user && (
+        <div className="mt-6 rounded-3xl bg-white/5 p-4 text-sm text-white/90">
+          <p className="font-semibold">{user.nome_completo || user.name || user.email}</p>
+          <button
+            onClick={signout}
+            className="mt-3 block rounded-xl bg-green-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-400"
+          >
+            Sair
+          </button>
+        </div>
+      )}
     </aside>
   );
 }
