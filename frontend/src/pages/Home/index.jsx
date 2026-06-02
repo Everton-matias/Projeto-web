@@ -1,5 +1,5 @@
-import { Navigation } from "../../componentes/navegacao";
-import CardInformativo from "../../componentes/card";
+import { Navigation } from "frontend/src/componentes/navigation";
+import CardInformativo from "frontend/src/componentes/cardInformativo";
 
 function Home() {
   const informacoes = [
