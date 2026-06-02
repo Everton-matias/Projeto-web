@@ -1,8 +1,10 @@
 import { useState } from "react";
-import ModalAlimentos from "../modalAlimentos";
+import Modal from "../modal";
 
 export default function CardInformativo() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [busca, setBusca] = useState("");
+
   const modelo = [
     { name: "alimento1" },
     { name: "alimento2" },
@@ -32,38 +34,49 @@ export default function CardInformativo() {
     },
   ];
 
+  const alimentosFiltrados = modelo.filter((alimento) =>
+    alimento.name.toLowerCase().includes(busca.toLowerCase()),
+  );
+
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <div className=" w-full  flex-col flex pt-15">
-      <h1 className="text-[#e5e7eb] text-2xl font-bold py-3 pl-21 flex">
-        Refeições
-      </h1>
+    <section className="w-full px-4 pb-8 pt-8 sm:px-6 lg:px-8 lg:pt-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
+        <h1 className="text-2xl font-bold text-[#e5e7eb] sm:text-3xl">
+          Refeições
+        </h1>
+        <p className="max-w-2xl text-sm text-[#cfd4de] sm:text-base">
+          Organize sua rotina alimentar e acompanhe os alimentos adicionados em
+          cada refeição.
+        </p>
+      </div>
       {nomeRefeicoes.map((refeicao, index) => {
         const isOpen = openIndex === index;
 
         return (
           <div
             key={refeicao.name}
-            className="bg-[#1a1f27]  rounded-xl py-5 mx-20 my-3 flex flex-col gap-3 border border-[#333332]"
+            className="mx-auto mt-4 flex w-full max-w-6xl flex-col gap-3 rounded-2xl border border-[#333332] bg-[#1a1f27] px-4 py-5 shadow-lg shadow-black/10 sm:px-5"
           >
-            <div className="flex items-center justify-between cursor-pointer rounded mx-5">
+            <div className="flex flex-col gap-3 rounded-xl sm:flex-row sm:items-center sm:justify-between">
               <h3
                 onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="text-[#e5e7eb] font-medium text-gray-100m pr-270 py-3 "
+                className="cursor-pointer text-[#e5e7eb] text-lg font-semibold sm:text-xl"
               >
                 {refeicao.name}
               </h3>
-              <div>
-                <button className="border border-[#333332] rounded-sm  mx-10">
-                  <p
-                    onClick={() => setIsModalOpen(true)}
-                    className="m-1 text-[#e5e7eb]"
-                  >
-                    + Alimento
-                  </p>
+              <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="rounded-lg border border-[#333332] bg-[#232933] px-3 py-2 text-sm text-[#e5e7eb] transition hover:bg-[#2b3340]"
+                >
+                  + Alimento
                 </button>
-                <button onClick={() => setOpenIndex(isOpen ? null : index)}>
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="rounded-lg border border-[#333332] bg-[#232933] p-2 text-[#e5e7eb] transition hover:bg-[#2b3340]"
+                >
                   <svg
                     className={`w-5 h-5 text-gray-300 transition-transform duration-200  ${isOpen ? "rotate-180" : ""}`}
                     fill="none"
@@ -108,19 +121,65 @@ export default function CardInformativo() {
           </div>
         );
       })}
-      <ModalAlimentos
+      <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Detalhes do Ângulo"
+        title="Adicionar alimento"
       >
-        {/* Todo conteúdo inserido aqui dentro entra no 'children' do Modal */}
-        <p>Aqui ficam as informações detalhadas que você queria mostrar!</p>
+        {/* <input
+          type="text"
+          placeholder="Nome do alimento"
+          className="w-full p-3 text-sm text-[#e5e7eb] bg-[#181c23] rounded-lg border border-[#333332] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition mb-4"
+        />
+        {modelo.map((alimento) => (
+          <div>
+            <p className="text-[#e5e7eb]">{alimento.name}</p>
+          </div>
+        ))}
         <div className="w-full h-px bg-gray-200 my-2" />{" "}
-        {/* Sua listra divisória */}
         <p className="text-xs text-gray-400">
           Dados processados em tempo real.
-        </p>
-      </ModalAlimentos>
-    </div>
+        </p> */}
+
+        <div className="w-full max-w-md mx-auto p-4 bg-white border rounded-xl shadow-sm">
+          <label
+            htmlFor="busca-alimento"
+            className="block text-sm font-semibold text-gray-700 mb-2"
+          >
+            Buscar Alimento
+          </label>
+
+          {/* Campo de Entrada (Input) */}
+          <input
+            id="busca-alimento"
+            type="text"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Digite o nome do alimento..."
+            className="w-full p-2.5 text-sm bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition mb-4"
+          />
+
+          {/* Listagem dos Resultados Filtrados */}
+          <ul className="divide-y divide-gray-100 max-h-60 overflow-y-auto">
+            {alimentosFiltrados.length > 0 ? (
+              alimentosFiltrados.map((alimento, index) => (
+                // Usando o modificador 'even:' para aplicar a listra sutil que vimos antes
+                <li
+                  key={index}
+                  className="p-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition even:bg-gray-50"
+                >
+                  {alimento.name}
+                </li>
+              ))
+            ) : (
+              // Mensagem caso nenhum resultado seja encontrado
+              <li className="p-3 text-sm text-gray-400 text-center italic">
+                Nenhum alimento encontrado.
+              </li>
+            )}
+          </ul>
+        </div>
+      </Modal>
+    </section>
   );
 }

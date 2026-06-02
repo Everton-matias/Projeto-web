@@ -51,27 +51,35 @@ export default function Informativo() {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <div className="w-full flex-col flex pt-15">
-      <h1 className="text-[#e5e7eb] text-2xl font-bold py-3 pl-21 flex">
-        Informações
-      </h1>
-      ;
+    <section className="w-full px-4 pb-12 pt-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
+        <h1 className="text-2xl font-bold text-[#e5e7eb] sm:text-3xl">
+          Informações
+        </h1>
+        <p className="max-w-2xl text-sm text-[#cfd4de] sm:text-base">
+          Veja dicas rápidas sobre os suplementos e como eles podem apoiar seus
+          treinos e rotina.
+        </p>
+      </div>
       {informacoes.map((informacao, index) => {
         const isOpen = openIndex === index;
 
         return (
           <div
             key={informacao.name}
-            className="bg-[#1a1f27] rounded-xl py-5 mx-20 my-3 flex flex-col gap-3 border border-[#333332]"
+            className="mx-auto mt-4 flex w-full max-w-6xl flex-col gap-3 rounded-2xl border border-[#333332] bg-[#1a1f27] px-4 py-5 shadow-lg shadow-black/10 sm:px-5"
           >
-            <div className="flex items-center justify-between cursor-pointer rounded mx-5">
+            <div className="flex items-center justify-between gap-3 rounded-xl">
               <h3
                 onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="text-[#e5e7eb] font-medium py-3 flex-1"
+                className="flex-1 cursor-pointer text-lg font-semibold text-[#e5e7eb] sm:text-xl"
               >
                 {informacao.name}
               </h3>
-              <button onClick={() => setOpenIndex(isOpen ? null : index)}>
+              <button
+                onClick={() => setOpenIndex(isOpen ? null : index)}
+                className="rounded-lg border border-[#333332] bg-[#232933] p-2 text-[#e5e7eb] transition hover:bg-[#2b3340]"
+              >
                 <svg
                   className={`w-5 h-5 text-gray-300 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                   fill="none"
@@ -106,6 +114,6 @@ export default function Informativo() {
           </div>
         );
       })}
-    </div>
+    </section>
   );
 }

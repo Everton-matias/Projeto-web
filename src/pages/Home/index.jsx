@@ -4,12 +4,12 @@ import Informativo from "../../componentes/extraInfo";
 
 function Home() {
   return (
-    <div className="bg-[#0f141b] flex-row flex min-h-screen">
+    <div className="min-h-screen bg-[#0f141b] flex flex-col lg:flex-row">
       <Navigation />
 
       <div
         id="container"
-        className="bg-[#0f141b] flex-col items-center flex-1 min-h-screen overflow-y-auto"
+        className="flex-1 min-h-screen overflow-y-auto bg-[#0f141b]"
       >
         <CardInformativo />
 
