@@ -4,13 +4,16 @@ import Modal from "../modal";
 export default function CardInformativo() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [busca, setBusca] = useState("");
+  const [mealIndex, setMealIndex] = useState(0);
+  const [quantidades, setQuantidades] = useState({});
+  const [itensPorRefeicao, setItensPorRefeicao] = useState({});
 
   const modelo = [
-    { name: "alimento1" },
-    { name: "alimento2" },
-    { name: "alimento3" },
-    { name: "alimento4" },
-    { name: "alimento5" },
+    { name: "Whey Protein", porcao: "1 scoop", quantidade: 0 },
+    { name: "Creatina", porcao: "5 g", quantidade: 0 },
+    { name: "Banana", porcao: "1 unidade", quantidade: 0 },
+    { name: "Aveia", porcao: "50 g", quantidade: 0 },
+    { name: "Iogurte", porcao: "200 ml", quantidade: 0 },
   ];
 
   const nomeRefeicoes = [
@@ -40,6 +43,38 @@ export default function CardInformativo() {
 
   const [openIndex, setOpenIndex] = useState(null);
 
+  const ajustarQuantidade = (nome, delta) => {
+    setQuantidades((prev) => ({
+      ...prev,
+      [nome]: Math.max(0, (prev[nome] || 0) + delta),
+    }));
+  };
+
+  const salvarPorcoesSelecionadas = () => {
+    const alimentosSelecionados = modelo.filter(
+      (alimento) => (quantidades[alimento.name] || 0) > 0,
+    );
+
+    if (alimentosSelecionados.length === 0) {
+      setIsModalOpen(false);
+      return;
+    }
+
+    setItensPorRefeicao((prev) => ({
+      ...prev,
+      [mealIndex]: [
+        ...(prev[mealIndex] || []),
+        ...alimentosSelecionados.map((alimento) => ({
+          ...alimento,
+          quantidade: quantidades[alimento.name] || 1,
+        })),
+      ],
+    }));
+
+    setIsModalOpen(false);
+    setBusca("");
+  };
+
   return (
     <section className="w-full px-4 pb-8 pt-8 sm:px-6 lg:px-8 lg:pt-10">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
@@ -68,7 +103,10 @@ export default function CardInformativo() {
               </h3>
               <div className="flex flex-wrap items-center gap-3 sm:justify-end">
                 <button
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    setMealIndex(index);
+                    setIsModalOpen(true);
+                  }}
                   className="rounded-lg border border-[#333332] bg-[#232933] px-3 py-2 text-sm text-[#e5e7eb] transition hover:bg-[#2b3340]"
                 >
                   + Alimento
@@ -98,22 +136,20 @@ export default function CardInformativo() {
             {isOpen && (
               <div className="px-4 pb-4 flex flex-col gap-3 rounded-b-md text-sm  animate-[fadeIn_0.25s_ease-out_forwards]">
                 <div className="w-full h-px bg-[#333332] my-4" />
-                {modelo.map((alimento) => (
+                {(itensPorRefeicao[index] || []).map((alimento) => (
                   <div
-                    className="flex items-center justify-between"
-                    key={alimento.name}
+                    className="flex items-center justify-between gap-3 rounded-xl border border-[#333332] bg-[#181c23] p-3"
+                    key={`${alimento.name}-${index}`}
                   >
                     <div>
                       <p className="text-[#e5e7eb]">{alimento.name}</p>
                       <p id="quantidade" className="text-[#bbbfc7]">
-                        1x
+                        {alimento.quantidade}x · {alimento.porcao}
                       </p>
                     </div>
-                    <div>
-                      <button>
-                        <p className="text-[#e5e7eb]">remover</p>
-                      </button>
-                    </div>
+                    <button className="rounded-lg border border-[#333332] px-3 py-1 text-xs text-[#e5e7eb] hover:bg-[#232933]">
+                      remover
+                    </button>
                   </div>
                 ))}
               </div>
@@ -124,60 +160,85 @@ export default function CardInformativo() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Adicionar alimento"
+        title={`Adicionar alimento · ${nomeRefeicoes[mealIndex]?.name || "Refeição"}`}
       >
-        {/* <input
-          type="text"
-          placeholder="Nome do alimento"
-          className="w-full p-3 text-sm text-[#e5e7eb] bg-[#181c23] rounded-lg border border-[#333332] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition mb-4"
-        />
-        {modelo.map((alimento) => (
-          <div>
-            <p className="text-[#e5e7eb]">{alimento.name}</p>
-          </div>
-        ))}
-        <div className="w-full h-px bg-gray-200 my-2" />{" "}
-        <p className="text-xs text-gray-400">
-          Dados processados em tempo real.
-        </p> */}
-
-        <div className="w-full max-w-md mx-auto p-4 bg-white border rounded-xl shadow-sm">
-          <label
-            htmlFor="busca-alimento"
-            className="block text-sm font-semibold text-gray-700 mb-2"
-          >
-            Buscar Alimento
-          </label>
-
-          {/* Campo de Entrada (Input) */}
+        <div className="w-full max-w-md mx-auto p-4  ">
           <input
             id="busca-alimento"
             type="text"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            placeholder="Digite o nome do alimento..."
-            className="w-full p-2.5 text-sm bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition mb-4"
+            placeholder=" Buscar Alimento"
+            className="w-full p-2.5 text-sm bg-[#1a1f27] border border-[#333332] rounded-lg text-[#bbbfc7] focus:ring-2  transition mb-4"
           />
 
-          {/* Listagem dos Resultados Filtrados */}
-          <ul className="divide-y divide-gray-100 max-h-60 overflow-y-auto">
-            {alimentosFiltrados.length > 0 ? (
-              alimentosFiltrados.map((alimento, index) => (
-                // Usando o modificador 'even:' para aplicar a listra sutil que vimos antes
-                <li
-                  key={index}
-                  className="p-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition even:bg-gray-50"
+          {alimentosFiltrados.length > 0 ? (
+            alimentosFiltrados.map((alimento) => {
+              const quantidadeAtual = quantidades[alimento.name] || 0;
+
+              return (
+                <div
+                  key={alimento.name}
+                  className="my-2 flex flex-col gap-3 rounded-2xl border border-[#333332] bg-[#181c23] p-3 text-sm text-[#e5e7eb]"
                 >
-                  {alimento.name}
-                </li>
-              ))
-            ) : (
-              // Mensagem caso nenhum resultado seja encontrado
-              <li className="p-3 text-sm text-gray-400 text-center italic">
-                Nenhum alimento encontrado.
-              </li>
-            )}
-          </ul>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold">{alimento.name}</p>
+                      <p className="text-[#bbbfc7]">
+                        Porção: {alimento.porcao}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded-xl border border-[#333332] bg-[#1f2631] px-3 py-2">
+                    <span className="text-xs uppercase tracking-[0.2em] text-[#cfd4de]">
+                      Quantidade
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => ajustarQuantidade(alimento.name, -1)}
+                        className="h-8 w-8 rounded-full border border-[#333332] text-[#e5e7eb] hover:bg-[#232933]"
+                      >
+                        −
+                      </button>
+                      <span className="min-w-8 text-center text-[#e5e7eb]">
+                        {quantidadeAtual}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => ajustarQuantidade(alimento.name, 1)}
+                        className="h-8 w-8 rounded-full border border-[#333332] text-[#e5e7eb] hover:bg-[#232933]"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <p className="p-3 text-sm text-[#e5e7eb] text-center italic">
+              Nenhum alimento encontrado.
+            </p>
+          )}
+
+          <div className="mt-4 flex justify-end gap-2 border-t border-[#333332] pt-4">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="rounded-lg border border-[#333332] bg-[#181c23] px-4 py-2 text-sm font-medium text-[#e5e7eb] hover:bg-[#232933]"
+            >
+              Fechar
+            </button>
+            <button
+              type="button"
+              onClick={salvarPorcoesSelecionadas}
+              className="rounded-lg border border-[#317C3E] bg-[#1f7a34] px-4 py-2 text-sm font-medium text-[#e5e7eb] hover:bg-[#2d8f42]"
+            >
+              Adicionar alimento
+            </button>
+          </div>
         </div>
       </Modal>
     </section>
