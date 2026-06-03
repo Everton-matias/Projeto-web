@@ -57,9 +57,3 @@ export function Navigation() {
     </div>
   );
 }
-
-/**
- * bg-[#0F4418]: Aplica um background-color com a cor exata em hexadecimal. 
-h-screen: Define a altura (height) para ocupar 100% da tela (100vh).
-flex e flex-col: Ativam o Flexbox e colocam os itens em coluna (um embaixo do outro).
-*/
