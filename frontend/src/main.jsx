@@ -7,6 +7,7 @@ import "./index.css";
 import Login from "./pages/login";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import TelaCompletaEditarPerfil from "./pages/telaCompletaEditarPerfil";
 import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./contexts/PrivateRoute";
 
@@ -32,6 +33,14 @@ createRoot(document.getElementById("root")).render(
               element={
                 <PrivateRoute>
                   <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/editar-perfil"
+              element={
+                <PrivateRoute>
+                  <TelaCompletaEditarPerfil />
                 </PrivateRoute>
               }
             />
