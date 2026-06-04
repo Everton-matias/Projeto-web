@@ -7,24 +7,24 @@ export function EditarPerfil() {
   const [nome, setNome] = useState("");
 
   return (
-    <div className="max-w-[1400px] ml-auto">
-      <div className="flex-1 h-screen bg-[#121212] text-gray-200 overflow-y-auto p-8 font-sans">
+    <div className="w-full rounded-3xl border border-white/10 bg-[#171b22]/95 p-4 shadow-2xl shadow-black/30 sm:p-6 md:p-8">
+      <div className="text-gray-200 font-sans">
         {/* Cabeçalho */}
         <Link
           to="/profile"
-          className="flex items-center gap-2 mb-8 cursor-pointer hover:text-white transition-colors"
+          className="mb-8 flex items-center gap-2 text-gray-300 transition-colors hover:text-white"
         >
           <ChevronLeft className="w-6 h-6" />
           <h2 className="text-xl font-semibold">Editar perfil</h2>
         </Link>
 
-        <div className="max-w-4xl bg-[#1A1A1A] mt-45 ml-60 border border-white/5 rounded-2xl p-8 shadow-lg">
+        <div className="rounded-2xl border border-white/10 bg-[#1a1d24] p-5 shadow-inner shadow-black/10 sm:p-6 md:p-8">
           {/* Seção: DADOS PESSOAIS */}
           <div className="mb-10">
             {/* Input Nome */}
             {/* Card do Usuário (Topo) */}
-            <div className="flex items-center gap-4 mb-10 pb-8 border-b border-white/10">
-              <div className="w-20 h-20 bg-[#E8F5E9] rounded-full flex items-center justify-center text-[#1F7A34] text-2xl font-bold">
+            <div className="mb-10 flex flex-col gap-4 border-b border-white/10 pb-8 sm:flex-row sm:items-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-[#b8f0c4] via-[#d9ffe1] to-[#8fd19a] text-2xl font-black text-[#12331a] shadow-lg shadow-emerald-900/25 sm:h-20 sm:w-20">
                 LB
               </div>
               <div>
@@ -40,11 +40,11 @@ export function EditarPerfil() {
             <h4 className="text-sm font-semibold text-gray-400 mb-4 tracking-wider">
               DADOS PESSOAIS
             </h4>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* ... */}
 
               {/* Input Nome */}
-              <div className="bg-[#242424] rounded-lg p-3 border border-white/5 focus-within:border-white/20 transition-colors h-[72px] flex flex-col justify-center">
+              <div className="flex h-18 flex-col justify-center rounded-xl border border-white/8 bg-[#242a33] p-3 transition-colors focus-within:border-emerald-400/30">
                 {/* ADICIONE htmlFor E cursor-pointer AQUI */}
                 <label
                   htmlFor="input-nome"
@@ -64,7 +64,7 @@ export function EditarPerfil() {
 
               {/* Input E-mail (Bloqueado) */}
               <div>
-                <div className="bg-[#242424] rounded-lg p-3 border border-white/5 opacity-70 h-[72px] flex justify-between items-center">
+                <div className="flex h-18 items-center justify-between rounded-xl border border-white/8 bg-[#242a33] p-3 opacity-80">
                   <div className="flex-1">
                     <label className="block text-xs text-gray-400 mb-1">
                       E-mail
@@ -76,7 +76,7 @@ export function EditarPerfil() {
                       className="w-full bg-transparent text-gray-400 outline-none text-sm cursor-not-allowed"
                     />
                   </div>
-                  <Lock className="w-4 h-4 text-gray-500" ml-2 />
+                  <Lock className="ml-2 h-4 w-4 text-gray-500" />
                 </div>
                 <p className="text-xs text-gray-500 mt-1 ml-1">
                   Não pode ser alterado

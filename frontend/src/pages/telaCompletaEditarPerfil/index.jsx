@@ -3,16 +3,16 @@ import { EditarPerfil } from "../../componentes/Editarperfil";
 
 export default function telaCompletaEditarPerfil() {
   return (
-    // A classe "flex" coloca um ao lado do outro
-    // "h-screen" garante que o layout ocupe a tela toda
-    <div className="flex h-screen w-full bg-[#121212]">
-      {/* O menu lateral fica aqui */}
+    <div className="min-h-screen bg-[linear-gradient(180deg,#0f141b_0%,#151b22_48%,#11161d_100%)] text-white lg:flex">
       <Navigation />
 
-      {/* O conteúdo principal ocupa o espaço restante (flex-1) */}
-      <div className="flex-1 overflow-y-auto">
-        <EditarPerfil />
-      </div>
+      <main className="flex-1 min-h-screen overflow-y-auto">
+        <div className="flex items-start justify-center p-4 pt-4 sm:p-6 sm:pt-6 md:p-8 md:pt-8 lg:pt-10">
+          <div className="w-full max-w-5xl">
+            <EditarPerfil />
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
