@@ -2,39 +2,82 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, Lock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
 
 export function EditarPerfil() {
   // Estados para os campos editáveis
   const [nome, setNome] = useState("");
+  const [nomeSalvo, setNomeSalvo] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const { updateUser } = useAuth();
+
   useEffect(() => {
-    const userStorage = localStorage.getItem('@NotFat:user');
-    if (userStorage) {
+    const carregarUsuario = async () => {
+      const userStorage = localStorage.getItem("@NotFat:user");
+      if (!userStorage) return;
+
       const user = JSON.parse(userStorage);
-      setNome(user.nome_completo || ""); 
+
+      try {
+        const response = await fetch(
+          `http://localhost:3000/usuario/${user.idUsuario}`,
+        );
+
+        if (response.ok) {
+          const usuarioBanco = await response.json();
+          const nomeAtual =
+            usuarioBanco.nome_completo || user.nome_completo || "";
+          const emailAtual = usuarioBanco.email || user.email || "";
+
+          setNome(nomeAtual);
+          setNomeSalvo(nomeAtual);
+          setEmail(emailAtual);
+
+          localStorage.setItem(
+            "@NotFat:user",
+            JSON.stringify({
+              ...user,
+              nome_completo: nomeAtual,
+              email: emailAtual,
+            }),
+          );
+          return;
+        }
+      } catch (error) {
+        console.error("Erro ao carregar dados do usuário:", error);
+      }
+
+      setNome(user.nome_completo || "");
+      setNomeSalvo(user.nome_completo || "");
       setEmail(user.email || "");
-    }
+    };
+
+    carregarUsuario();
   }, []);
-  
+
   const handleSave = async () => {
-    const userStorage = localStorage.getItem('@NotFat:user');
+    const userStorage = localStorage.getItem("@NotFat:user");
     if (!userStorage) return;
     const user = JSON.parse(userStorage);
 
     try {
-      const response = await fetch(`http://localhost:3000/usuario/${user.idUsuario}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ novo_nome: nome }), 
-      });
+      const response = await fetch(
+        `http://localhost:3000/usuario/${user.idUsuario}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ novo_nome: nome }),
+        },
+      );
 
       if (response.ok) {
-        // Atualiza o localStorage com o novo nome para refletir em todo o app
-        user.nome_completo = nome;
-        localStorage.setItem('@NotFat:user', JSON.stringify(user));
-        
-        alert("Perfil atualizado com sucesso!");
+        const usuarioAtualizado = { ...user, nome_completo: nome };
+
+        updateUser(usuarioAtualizado);
+        localStorage.setItem("@NotFat:user", JSON.stringify(usuarioAtualizado));
+        setNomeSalvo(nome);
+
         navigate("/profile"); // Volta para a tela de perfil
       } else {
         alert("Erro ao salvar no servidor.");
@@ -67,7 +110,9 @@ export function EditarPerfil() {
               </div>
               <div>
                 {/* SUBSTITUA O TEXTO FIXO PELA VARIÁVEL {nome} AQUI */}
-                <h3 className="text-2xl font-semibold text-white">{nome}</h3>
+                <h3 className="text-2xl font-semibold text-white">
+                  {nomeSalvo}
+                </h3>
                 <p className="text-gray-400">{email}</p>
                 <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
                   <Lock className="w-3 h-3" />
@@ -125,13 +170,13 @@ export function EditarPerfil() {
 
           {/* Botões de Ação */}
           <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-white/10">
-            <button 
+            <button
               onClick={() => navigate("/profile")} // Volta para o perfil
               className="px-6 py-2.5 rounded-lg border border-gray-600 text-gray-300 hover:bg-white/5 transition-colors text-sm font-medium"
             >
               Cancelar
             </button>
-            <button 
+            <button
               onClick={handleSave} // <--- ESTA É A MUDANÇA MAIS IMPORTANTE!
               className="px-6 py-2.5 rounded-lg bg-[#1B5E20] hover:bg-[#1F7A34] text-white transition-colors text-sm font-medium"
             >

@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Home, User, LogOut } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 export function Navigation() {
   const { user, signout } = useAuth();
-  const [abaAtiva, setAbaAtiva] = useState("inicio");
+  const location = useLocation();
+  const abaAtiva = location.pathname.startsWith("/profile")
+    ? "perfil"
+    : "inicio";
 
   const itemClass = (ativa) =>
     `mx-3 mb-4 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${
@@ -38,21 +40,13 @@ export function Navigation() {
       <nav className="mt-2 text-[16px] lg:mt-4 lg:text-[18px]">
         <ul>
           <li>
-            <Link
-              to="/"
-              onClick={() => setAbaAtiva("inicio")}
-              className={itemClass("inicio")}
-            >
+            <Link to="/" className={itemClass("inicio")}>
               <Home className="h-5 w-5" />
               Início
             </Link>
           </li>
           <li>
-            <Link
-              to="/profile"
-              onClick={() => setAbaAtiva("perfil")}
-              className={itemClass("perfil")}
-            >
+            <Link to="/profile" className={itemClass("perfil")}>
               <User className="h-5 w-5" />
               Perfil
             </Link>
@@ -67,10 +61,7 @@ export function Navigation() {
           </p>
           <button
             type="button"
-            onClick={() => {
-              setAbaAtiva("sair da conta");
-              signout();
-            }}
+            onClick={() => signout()}
             className={
               itemClass("sair da conta") +
               " mt-3 w-full justify-center border border-white/10 bg-[#1f734] hover:bg-red-500/20"
