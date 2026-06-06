@@ -217,7 +217,53 @@ app.put('/usuario/:idUsuario', async (req, res) => {
         return respondServerError(res, err);
     }
 });
+// 9. ROTA DE REGISTRAR CONSUMO DE ÁGUA
+app.post('/agua', async (req, res) => {
+    try {
+        const { idUsuario, quantidade_ml } = req.body;
+        if (!idUsuario || !quantidade_ml) {
+            return res.status(400).json({ erro: "Dados incompletos." });
+        }
 
+        const sql = 'INSERT INTO consumo_agua (usuario, quantidade_ml) VALUES (?, ?)';
+        await pool.query(sql, [idUsuario, quantidade_ml]);
+
+        return res.json({ mensagem: "Água registrada com sucesso!" });
+    } catch (err) {
+        return respondServerError(res, err);
+    }
+});
+
+// 10. ROTA DE BUSCAR CONSUMO DE ÁGUA (Hoje e Histórico)
+app.get('/agua/:idUsuario', async (req, res) => {
+    try {
+        const { idUsuario } = req.params;
+
+        // Consumo de hoje
+        const [hoje] = await pool.query(
+            'SELECT SUM(quantidade_ml) as total FROM consumo_agua WHERE usuario = ? AND DATE(data_registro) = CURDATE()',
+            [idUsuario]
+        );
+
+        // Histórico dos últimos 7 dias
+        const [historico] = await pool.query(`
+            SELECT 
+                DATE(data_registro) as data, 
+                SUM(quantidade_ml) as total 
+            FROM consumo_agua 
+            WHERE usuario = ? AND data_registro >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            GROUP BY DATE(data_registro)
+            ORDER BY data DESC
+        `, [idUsuario]);
+
+        return res.json({
+            consumoHoje: hoje[0].total || 0,
+            historico: historico
+        });
+    } catch (err) {
+        return respondServerError(res, err);
+    }
+});
 
 // 5. LIGAR O SERVIDOR (Sempre no final do arquivo!)
 const PORT = process.env.PORT || 3000;

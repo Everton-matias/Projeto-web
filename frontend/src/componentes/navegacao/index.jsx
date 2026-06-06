@@ -1,13 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, User, LogOut } from "lucide-react";
+import { Home, User, LogOut, Droplets } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 export function Navigation() {
   const { user, signout } = useAuth();
   const location = useLocation();
-  const abaAtiva = location.pathname.startsWith("/profile")
-    ? "perfil"
-    : "inicio";
+  
+  let abaAtiva = "inicio";
+  if (location.pathname.startsWith("/profile")) {
+    abaAtiva = "perfil";
+  } else if (location.pathname.startsWith("/agua")) {
+    abaAtiva = "agua";
+  }
 
   const itemClass = (ativa) =>
     `mx-3 mb-4 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${
@@ -49,6 +53,12 @@ export function Navigation() {
             <Link to="/profile" className={itemClass("perfil")}>
               <User className="h-5 w-5" />
               Perfil
+            </Link>
+          </li>
+          <li>
+            <Link to="/agua" className={itemClass("agua")}>
+              <Droplets className="h-5 w-5" />
+              Água
             </Link>
           </li>
         </ul>

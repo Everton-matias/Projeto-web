@@ -7,6 +7,7 @@ import "./index.css";
 import Login from "./pages/login";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import Agua from "./pages/Agua";
 import TelaCompletaEditarPerfil from "./pages/telaCompletaEditarPerfil";
 import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./contexts/PrivateRoute";
@@ -33,6 +34,14 @@ createRoot(document.getElementById("root")).render(
               element={
                 <PrivateRoute>
                   <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/agua"
+              element={
+                <PrivateRoute>
+                  <Agua />
                 </PrivateRoute>
               }
             />
