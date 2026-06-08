@@ -60,7 +60,10 @@ function Login() {
         <div className="mb-5 h-32 w-32 overflow-hidden rounded-full shadow-lg shadow-black/20 sm:h-36 sm:w-36 md:h-45 md:w-45">
           <img src={logo} alt="Not Fat Logo" className="" />
         </div>
-        <h1 className="mb-1 text-3xl font-black tracking-[0.25em] text-white sm:text-4xl">
+        <h1
+          translate="no"
+          className="mb-1 text-3xl font-black tracking-[0.25em] text-white sm:text-4xl"
+        >
           NOT FAT
         </h1>
         <p className="mb-8 text-sm italic text-white/80 sm:text-base">

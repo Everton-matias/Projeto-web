@@ -33,7 +33,10 @@ export function Navigation() {
     >
       <div className="flex items-center justify-between gap-4 lg:flex-col lg:items-start">
         <div>
-          <h1 className="text-[24px] font-black tracking-[0.18em] text-white sm:text-[28px] lg:text-[30px]">
+          <h1
+            translate="no"
+            className="text-[24px] font-black tracking-[0.18em] text-white sm:text-[28px] lg:text-[30px]"
+          >
             NOT FAT
           </h1>
           <p className="mt-1 text-xs text-green-100/90 sm:text-sm">
