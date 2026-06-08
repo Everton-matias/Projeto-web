@@ -115,8 +115,8 @@ export default function Agua() {
     <div className="flex min-h-screen bg-[#0F0F0F] text-white font-sans selection:bg-green-500/30 overflow-x-hidden">
       <Navigation />
 
-      <main className="flex-1 p-6 lg:pl-72 lg:p-12">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 p-6 lg:p-12">
+        <div className="max-w-7xl mx-auto sidebar-offset">
           {/* HEADER */}
           <div className="flex flex-col lg:flex-row justify-between items-start mb-12 gap-6">
             <div>

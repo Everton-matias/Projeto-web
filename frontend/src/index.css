@@ -57,3 +57,10 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #252525;
 }
+
+/* Offset do conteúdo principal para compensar a barra lateral fixa */
+@media (min-width: 1024px) {
+  .sidebar-offset {
+    margin-left: 18rem; /* lg:w-72 = 18rem */
+  }
+}
