@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    # Se o seu .env do backend tiver credenciais do banco, o Docker vai ler aqui:
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: .
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
