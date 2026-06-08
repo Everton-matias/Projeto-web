@@ -1,14 +1,13 @@
-import { useState, useEffect } from "react"; 
+import { useState, useEffect } from "react";
 import { Navigation } from "../../componentes/navegacao";
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
 
 function Profile() {
- 
   const [user, setUser] = useState({ nome_completo: "", email: "" });
 
   useEffect(() => {
-    const userStorage = localStorage.getItem('@NotFat:user');
+    const userStorage = localStorage.getItem("@NotFat:user");
     if (userStorage) {
       setUser(JSON.parse(userStorage));
     }
@@ -18,7 +17,7 @@ function Profile() {
     <div className="min-h-screen bg-[linear-gradient(180deg,#0f141b_0%,#151b22_48%,#11161d_100%)] text-white lg:flex">
       <Navigation />
 
-      <main className="flex-1 min-h-screen overflow-y-auto">
+      <main className="flex-1 min-h-screen overflow-y-auto lg:pl-72">
         <div className="flex items-start justify-center p-4 pt-4 sm:p-6 sm:pt-6 md:p-8 md:pt-8 lg:pt-10">
           <div className="w-full max-w-5xl rounded-3xl border border-white/10 bg-[#171b22]/95 p-4 shadow-2xl shadow-black/30 sm:p-6 md:p-8">
             {/* CABEÇALHO DO PERFIL */}
@@ -34,9 +33,7 @@ function Profile() {
                   <p className="text-lg font-bold text-white sm:text-xl">
                     {user.nome_completo}
                   </p>
-                  <p className="text-sm text-gray-400">
-                    {user.email}
-                  </p>
+                  <p className="text-sm text-gray-400">{user.email}</p>
                 </div>
               </div>
 
@@ -81,9 +78,7 @@ function Profile() {
               {/* CAMPO EMAIL */}
               <div className="rounded-2xl border border-white/8 bg-[#20252d] px-5 py-4 shadow-inner shadow-black/10 transition hover:border-emerald-400/30 hover:bg-[#232a33]">
                 <p className="mb-1 text-xs text-gray-400">E-mail</p>
-                <p className="text-base text-white">
-                  {user.email}
-                </p>
+                <p className="text-base text-white">{user.email}</p>
               </div>
             </div>
           </div>

@@ -153,16 +153,6 @@ cd backend
 npm install
 ```
 
-Para rodar este projeto, é necessário ter o **Docker** e o **Docker Compose** instalados na máquina.
-
-## Como rodar a aplicação
-1. Abra o terminal na pasta raiz do projeto.
-2. Execute o seguinte comando:
-
-```bash
-   docker-compose up --build
-```
-
 ### 2. Configurar variáveis de ambiente
 
 Crie os arquivos `.env` conforme necessário:

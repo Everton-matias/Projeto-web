@@ -1,13 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, User, LogOut } from "lucide-react";
+import { Home, User, LogOut, Droplets } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
 export function Navigation() {
   const { user, signout } = useAuth();
   const location = useLocation();
-  const abaAtiva = location.pathname.startsWith("/profile")
-    ? "perfil"
-    : "inicio";
+
+  let abaAtiva = "inicio";
+  if (location.pathname.startsWith("/profile")) {
+    abaAtiva = "perfil";
+  } else if (location.pathname.startsWith("/agua")) {
+    abaAtiva = "agua";
+  }
 
   const itemClass = (ativa) =>
     `mx-3 mb-4 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${
@@ -19,7 +23,7 @@ export function Navigation() {
   return (
     <aside
       id="navigation"
-      className="sticky top-0 z-10 flex w-full flex-col border-b border-white/10 bg-[#0F4418] px-4 py-5 shadow-[inset_0_20px_20px_-10px_rgba(0,0,0,0.35)] lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:border-b-0 lg:border-r lg:px-6 lg:py-6"
+      className="sticky top-0 z-10 flex w-full flex-col border-b border-white/10 bg-[#0F4418] px-4 py-5 shadow-[inset_0_20px_20px_-10px_rgba(0,0,0,0.35)] lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:w-72 lg:shrink-0 lg:border-b-0 lg:border-r lg:px-6 lg:py-6"
     >
       <div className="flex items-center justify-between gap-4 lg:flex-col lg:items-start">
         <div>
@@ -36,7 +40,6 @@ export function Navigation() {
       </div>
 
       <hr className="my-4 border-t border-white/20 lg:my-5" />
-
       <nav className="mt-2 text-[16px] lg:mt-4 lg:text-[18px]">
         <ul>
           <li>
@@ -49,6 +52,12 @@ export function Navigation() {
             <Link to="/profile" className={itemClass("perfil")}>
               <User className="h-5 w-5" />
               Perfil
+            </Link>
+          </li>
+          <li>
+            <Link to="/agua" className={itemClass("agua")}>
+              <Droplets className="h-5 w-5" />
+              Água
             </Link>
           </li>
         </ul>
