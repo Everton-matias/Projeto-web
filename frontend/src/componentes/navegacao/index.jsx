@@ -5,7 +5,7 @@ import { useAuth } from "../../contexts/AuthContext";
 export function Navigation() {
   const { user, signout } = useAuth();
   const location = useLocation();
-  
+
   let abaAtiva = "inicio";
   if (location.pathname.startsWith("/profile")) {
     abaAtiva = "perfil";
@@ -23,7 +23,7 @@ export function Navigation() {
   return (
     <aside
       id="navigation"
-      className="sticky top-0 z-10 flex w-full flex-col border-b border-white/10 bg-[#0F4418] px-4 py-5 shadow-[inset_0_20px_20px_-10px_rgba(0,0,0,0.35)] lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:border-b-0 lg:border-r lg:px-6 lg:py-6"
+      className="sticky top-0 z-10 flex w-full flex-col border-b border-white/10 bg-[#0F4418] px-4 py-5 shadow-[inset_0_20px_20px_-10px_rgba(0,0,0,0.35)] lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:w-72 lg:shrink-0 lg:border-b-0 lg:border-r lg:px-6 lg:py-6"
     >
       <div className="flex items-center justify-between gap-4 lg:flex-col lg:items-start">
         <div>

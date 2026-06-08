@@ -9,7 +9,7 @@ function Home() {
 
       <div
         id="container"
-        className="flex-1 min-h-screen overflow-y-auto bg-[#0f141b]"
+        className="flex-1 min-h-screen overflow-y-auto bg-[#0f141b] lg:pl-72"
       >
         <Card />
 
