@@ -5,10 +5,15 @@ import { useAuth } from "../../contexts/AuthContext";
 export function Navigation() {
   const { user, signout } = useAuth();
   const location = useLocation();
-  const isEditProfilePage = location.pathname.startsWith("/editar-perfil");
+  const isProfilePage =
+    location.pathname === "/profile" ||
+    location.pathname.startsWith("/profile/");
+  const isEditProfilePage =
+    location.pathname === "/editar-perfil" ||
+    location.pathname.startsWith("/editar-perfil/");
 
   let abaAtiva = "inicio";
-  if (location.pathname.startsWith("/profile") || isEditProfilePage) {
+  if (isProfilePage || isEditProfilePage) {
     abaAtiva = "perfil";
   } else if (location.pathname.startsWith("/agua")) {
     abaAtiva = "agua";
@@ -57,7 +62,11 @@ export function Navigation() {
             </Link>
           </li>
           <li>
-            <Link to="/profile" className={itemClass("perfil")}>
+            <Link
+              to="/profile"
+              className={itemClass("perfil")}
+              aria-current={abaAtiva === "perfil" ? "page" : undefined}
+            >
               <User className="h-5 w-5" />
               Perfil
             </Link>
