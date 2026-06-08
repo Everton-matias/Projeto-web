@@ -5,10 +5,10 @@ import { useAuth } from "../../contexts/AuthContext";
 export function Navigation() {
   const { user, signout } = useAuth();
   const location = useLocation();
-  const isEditProfilePage = location.pathname === "/editar-perfil";
+  const isEditProfilePage = location.pathname.startsWith("/editar-perfil");
 
   let abaAtiva = "inicio";
-  if (location.pathname.startsWith("/profile")) {
+  if (location.pathname.startsWith("/profile") || isEditProfilePage) {
     abaAtiva = "perfil";
   } else if (location.pathname.startsWith("/agua")) {
     abaAtiva = "agua";
@@ -17,7 +17,7 @@ export function Navigation() {
   const itemClass = (ativa) =>
     `mx-3 mb-4 flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${
       abaAtiva === ativa
-        ? "bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+        ? "bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
         : "text-green-100/90 hover:bg-white/10 hover:text-white"
     }`;
 
