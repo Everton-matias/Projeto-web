@@ -2,22 +2,22 @@
 
 ## Visão geral
 
-O projeto Not Fat é uma aplicação full stack voltada para acompanhamento de refeições, cadastro de alimentos e informações sobre suplementos. A interface foi construída com React + Vite, e o backend foi desenvolvido com Node.js + Express para autenticação e integração com um banco MySQL.
+O Not Fat é uma aplicação full stack para acompanhamento de rotina alimentar, hidratação e hábitos de saúde. A interface foi construída com React + Vite, enquanto o backend utiliza Node.js + Express com MySQL para persistir usuários, refeições, alimentos e consumo diário de água.
 
-O sistema atual oferece:
+O projeto atualmente oferece:
 
-- login com conta Google;
-- visualização e gerenciamento de refeições;
-- adição e remoção de alimentos por refeição;
-- perfil do usuário com dados básicos;
-- tela de edição do perfil;
-- seção informativa com dicas sobre suplementos.
+- autenticação com conta Google;
+- cadastro e acompanhamento de alimentos por refeição;
+- visualização do histórico de consumo de água;
+- cálculo de meta diária de hidratação;
+- perfil do usuário com edição do nome;
+- cards informativos sobre suplementos.
 
 ---
 
 ## Objetivo do projeto
 
-Auxiliar o usuário a organizar melhor sua rotina alimentar, registrar alimentos por refeição e acessar informações úteis sobre hábitos e suplementação relacionados à saúde e ao desempenho.
+Auxiliar o usuário a organizar melhor sua rotina alimentar, manter o controle das refeições, acompanhar a hidratação e acessar dicas práticas sobre suplementação e saúde.
 
 ---
 
@@ -30,8 +30,8 @@ Auxiliar o usuário a organizar melhor sua rotina alimentar, registrar alimentos
 - React Router DOM
 - Tailwind CSS
 - Lucide React
-- Font Awesome
 - Google OAuth React
+- Font Awesome
 
 ### Backend
 
@@ -41,25 +41,36 @@ Auxiliar o usuário a organizar melhor sua rotina alimentar, registrar alimentos
 - CORS
 - Dotenv
 - Google Auth Library
-- JWT (preparado para autenticação com tokens)
 
 ---
 
-## Estrutura do projeto
+## Arquitetura e estrutura do projeto
 
 ```text
 Projeto-web/
 ├── frontend/
 │   └── src/
-│       ├── componentes/         # componentes reutilizáveis
-│       ├── contexts/            # autenticação e rotas privadas
-│       ├── pages/               # telas principais
-│       └── assets/              # imagens e ícones
+│       ├── componentes/
+│       │   ├── card/              # lista de refeições e adição de alimentos
+│       │   ├── Editarperfil/      # tela de edição do perfil
+│       │   ├── extraInfo/         # cards informativos de suplementos
+│       │   ├── modal/             # modal para adicionar alimentos
+│       │   └── navegacao/         # sidebar principal
+│       ├── contexts/
+│       │   ├── AuthContext.jsx    # autenticação global
+│       │   └── PrivateRoute.jsx   # rotas protegidas
+│       └── pages/
+│           ├── Home/              # tela inicial
+│           ├── Agua/              # acompanhamento de hidratação
+│           ├── Profile/           # tela de perfil
+│           ├── login/             # login com Google
+│           └── telaCompletaEditarPerfil/
 ├── backend/
-│   ├── app.js                  # servidor Express e rotas
-│   └── package.json            # dependências do backend
-├── package.json                # dependências e scripts do frontend
-└── vite.config.js             # configuração do Vite
+│   ├── app.js                    # API Express
+│   ├── setup-db.js               # criação das tabelas MySQL
+│   └── package.json
+├── package.json                   # scripts e dependências do frontend
+└── vite.config.js                # configuração do Vite
 ```
 
 ---
@@ -68,24 +79,31 @@ Projeto-web/
 
 ### 1. Autenticação
 
-- Login realizado com Google OAuth.
-- O token recebido pelo frontend é validado no backend.
-- O usuário é criado ou localizado no banco de dados com base no email.
+- Login com Google OAuth via frontend.
+- O backend valida o token recebido e cria ou recupera o usuário no banco.
+- O contexto de autenticação mantém o usuário conectado no armazenamento local.
 
 ### 2. Refeições
 
-- O usuário pode visualizar as refeições cadastradas: Desjejum, Café da manhã, Almoço, Lanche da tarde, Jantar e Ceia.
-- É possível adicionar alimentos à refeição selecionada.
-- Também é possível excluir itens já adicionados.
+- A tela inicial exibe as refeições: Desjejum, Café da manhã, Almoço, Lanche da tarde, Jantar e Ceia.
+- É possível abrir cada refeição, visualizar os alimentos cadastrados e remover itens.
+- O modal de adição permite buscar alimentos e definir a quantidade desejada.
 
-### 3. Perfil do usuário
+### 3. Hidratação
 
-- Exibe nome e email do usuário autenticado.
-- Possui tela de edição para atualizar o nome.
+- A página “Água” mostra o consumo de hoje e o histórico recente.
+- O usuário pode registrar volumes personalizados e verificar o percentual da meta diária.
+- Há uma calculadora de meta diária com base no peso e nível de atividade.
 
-### 4. Informações adicionais
+### 4. Perfil e edição
 
-- A home exibe blocos informativos com dicas sobre suplementos como Whey Protein, Creatina, Pré-treino e Hipercalórico.
+- A página de perfil exibe nome e e-mail do usuário autenticado.
+- A tela de edição permite atualizar o nome completo.
+- O menu lateral destaca a seção “Perfil” também na tela de edição.
+
+### 5. Conteúdo informativo
+
+- A home possui cards com dicas sobre Whey Protein, Creatina, Pré-treino e Hipercalórico.
 
 ---
 
@@ -94,19 +112,22 @@ Projeto-web/
 ### Frontend
 
 - `/login` — tela de autenticação
-- `/` — página inicial com refeições e informações
+- `/` — tela inicial com refeições e informações
 - `/profile` — perfil do usuário
-- `/editar-perfil` — edição de dados do perfil
+- `/agua` — acompanhamento de hidratação
+- `/editar-perfil` — edição do perfil
 
 ### Backend (API)
 
-- `POST /login` — autenticação do usuário
-- `POST /adicionar` — adicionar alimento a uma refeição
+- `POST /login` — autenticação e cadastro/recuperação do usuário
+- `POST /adicionar` — adicionar alimentos a uma refeição
 - `GET /alimentos` — listar alimentos disponíveis
-- `GET /usuario/:idUsuario` — buscar usuário por ID
-- `GET /refeicao/:idUsuario/:idRefeicao` — listar alimentos de uma refeição
-- `DELETE /refeicao/:idUsuario/:idRefeicao/:idAlimento` — remover alimento
-- `PUT /usuario/:idUsuario` — atualizar nome do usuário
+- `GET /usuario/:idUsuario` — consultar dados do usuário
+- `GET /refeicao/:idUsuario/:idRefeicao` — listar itens de uma refeição
+- `DELETE /refeicao/:idUsuario/:idRefeicao/:idAlimento` — remover alimento da refeição
+- `PUT /usuario/:idUsuario` — atualizar o nome do usuário
+- `POST /agua` — registrar consumo de água
+- `GET /agua/:idUsuario` — consultar consumo hoje e histórico
 
 ---
 
@@ -114,15 +135,13 @@ Projeto-web/
 
 ### Frontend
 
-O projeto utiliza a variável:
+No arquivo `.env` da raiz, configure:
 
 - `VITE_GOOGLE_CLIENT_ID`
 
-Ela deve ser configurada no arquivo `.env` da raiz do projeto.
-
 ### Backend
 
-O backend depende de variáveis como:
+No arquivo `.env` da pasta `backend/`, configure:
 
 - `db_host`
 - `db_port`
@@ -130,9 +149,18 @@ O backend depende de variáveis como:
 - `db_password`
 - `db_database`
 - `PORT`
-- `DB_SSL_CA` (quando necessário)
+- `DB_SSL_CA` (necessário em ambientes com SSL do MySQL)
 
-Essas configurações ficam no arquivo `.env` dentro da pasta `backend/`.
+Observação: o projeto também pode manter as variáveis do Google no backend caso você queira ampliar a integração futura.
+
+---
+
+## Pré-requisitos
+
+- Node.js 18+ ou compatível
+- npm
+- banco MySQL ativo
+- uma conta Google válida para autenticação OAuth
 
 ---
 
@@ -153,23 +181,32 @@ cd backend
 npm install
 ```
 
-### 2. Configurar variáveis de ambiente
+### 2. Configurar as variáveis de ambiente
 
-Crie os arquivos `.env` conforme necessário:
+Crie os arquivos `.env` necessários:
 
 - raiz: `VITE_GOOGLE_CLIENT_ID=...`
-- backend: variáveis de conexão com o banco e credenciais do Google, se aplicável
+- backend: `db_host=...`, `db_port=...`, `db_user=...`, `db_password=...`, `db_database=...`, `PORT=3000`
 
-### 3. Iniciar o backend
+### 3. Preparar o banco de dados
+
+Você pode usar o script abaixo para criar as tabelas iniciais:
+
+```bash
+cd backend
+node setup-db.js
+```
+
+### 4. Iniciar o backend
 
 ```bash
 cd backend
 npm start
 ```
 
-O servidor será iniciado normalmente na porta `3000`.
+O backend ficará disponível em `http://localhost:3000` por padrão.
 
-### 4. Iniciar o frontend
+### 5. Iniciar o frontend
 
 Na raiz do projeto:
 
@@ -177,18 +214,29 @@ Na raiz do projeto:
 npm run dev
 ```
 
-O painel do Vite geralmente será aberto em `http://localhost:5173`.
+O Vite normalmente abrirá a aplicação em `http://localhost:5173`.
+
+---
+
+## Fluxo de uso típico
+
+1. Acesse `/login` e faça login com Google.
+2. O sistema cria ou recupera o usuário no banco.
+3. Na tela inicial, adicione alimentos às refeições desejadas.
+4. Acompanhe a hidratação na página `/agua`.
+5. Consulte ou edite seus dados no perfil.
 
 ---
 
 ## Observações importantes
 
-- O backend depende de um banco MySQL ativo para funcionar corretamente.
-- A autenticação com Google exige um `client ID` válido configurado no projeto.
-- O arquivo `.env` com credenciais sensíveis não deve ser compartilhado publicamente.
+- O backend depende de um banco MySQL configurado corretamente.
+- A autenticação Google exige um `client ID` válido e uma configuração correta no frontend.
+- O arquivo `.env` não deve ser compartilhado publicamente.
+- Para desenvolvimento local, confirme se o backend e o frontend estão rodando em portas diferentes e com a URL correta configurada nas chamadas fetch.
 
 ---
 
 ## Resumo
 
-Este projeto combina uma interface moderna em React com uma API em Express e banco MySQL para oferecer uma experiência prática de controle alimentar, autenticação segura e consulta de informações úteis para a rotina de treino e alimentação.
+O Not Fat combina uma interface moderna em React com uma API em Express e banco MySQL para oferecer um fluxo completo de acompanhamento alimentar, hidratação e gestão de perfil, com foco em experiência prática e usabilidade.
