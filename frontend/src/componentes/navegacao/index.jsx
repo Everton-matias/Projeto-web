@@ -40,7 +40,6 @@ export function Navigation() {
       </div>
 
       <hr className="my-4 border-t border-white/20 lg:my-5" />
-
       <nav className="mt-2 text-[16px] lg:mt-4 lg:text-[18px]">
         <ul>
           <li>

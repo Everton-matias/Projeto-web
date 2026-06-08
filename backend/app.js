@@ -238,6 +238,7 @@ app.post('/agua', async (req, res) => {
 app.get('/agua/:idUsuario', async (req, res) => {
     try {
         const { idUsuario } = req.params;
+        const dias = parseInt(req.query.dias) || 7;
 
         // Consumo de hoje
         const [hoje] = await pool.query(
@@ -245,16 +246,16 @@ app.get('/agua/:idUsuario', async (req, res) => {
             [idUsuario]
         );
 
-        // Histórico dos últimos 7 dias
+        // Histórico personalizado
         const [historico] = await pool.query(`
             SELECT 
                 DATE(data_registro) as data, 
                 SUM(quantidade_ml) as total 
             FROM consumo_agua 
-            WHERE usuario = ? AND data_registro >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            WHERE usuario = ? AND data_registro >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
             GROUP BY DATE(data_registro)
             ORDER BY data DESC
-        `, [idUsuario]);
+        `, [idUsuario, dias]);
 
         return res.json({
             consumoHoje: hoje[0].total || 0,

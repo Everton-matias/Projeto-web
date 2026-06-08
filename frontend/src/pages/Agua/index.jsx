@@ -7,20 +7,51 @@ export default function Agua() {
   const { user } = useAuth();
   const [consumoHoje, setConsumoHoje] = useState(0);
   const [historico, setHistorico] = useState([]);
-  const [metaDiaria, setMetaDiaria] = useState(2.8);
-  const [peso, setPeso] = useState(85);
-  const [nivelAtividade, setNivelAtividade] = useState("Moderado");
+  const [metaDiaria, setMetaDiaria] = useState(() => {
+    return parseFloat(localStorage.getItem("metaDiaria")) || 2.8;
+  });
+  const [peso, setPeso] = useState(() => {
+    return parseFloat(localStorage.getItem("pesoUsuario")) || 85;
+  });
+  const [nivelAtividade, setNivelAtividade] = useState(() => {
+    return localStorage.getItem("nivelAtividade") || "Moderado";
+  });
+  const [minimoIdeal, setMinimoIdeal] = useState(() => {
+    const p = parseFloat(localStorage.getItem("pesoUsuario")) || 85;
+    return (p * 35) / 1000;
+  });
+  const [diasFiltro, setDiasFiltro] = useState(7);
+
+  const calcularMeta = () => {
+    // Cálculo base: 35ml por kg
+    let base = peso * 35;
+    
+    // Adicional por nível de atividade
+    if (nivelAtividade === "Moderado") base += 500;
+    if (nivelAtividade === "Ativo") base += 1000;
+
+    const metaLitros = base / 1000;
+    const min = (peso * 35) / 1000;
+
+    setMetaDiaria(metaLitros);
+    setMinimoIdeal(min);
+
+    // Persistir no localStorage
+    localStorage.setItem("metaDiaria", metaLitros.toString());
+    localStorage.setItem("pesoUsuario", peso.toString());
+    localStorage.setItem("nivelAtividade", nivelAtividade);
+  };
 
   useEffect(() => {
     async function fetchWaterData() {
       if (!user) return;
       try {
         const idUsuario = user.idUsuario || user.id;
-        const response = await fetch(`http://localhost:3000/agua/${idUsuario}`);
+        const response = await fetch(`http://localhost:3000/agua/${idUsuario}?dias=${diasFiltro}`);
         if (response.ok) {
           const data = await response.json();
           setConsumoHoje(data.consumoHoje / 1000);
-          if (data.historico && data.historico.length > 0) {
+          if (data.historico) {
             setHistorico(data.historico);
           }
         }
@@ -29,7 +60,7 @@ export default function Agua() {
       }
     }
     fetchWaterData();
-  }, [user]);
+  }, [user, diasFiltro]);
 
   const addAgua = async (ml) => {
     if (!user) return;
@@ -55,6 +86,30 @@ export default function Agua() {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percent / 100) * circumference;
+
+  const formatarData = (dataStr) => {
+    const data = new Date(dataStr + 'T00:00:00');
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const ontem = new Date(hoje);
+    ontem.setDate(hoje.getDate() - 1);
+
+    if (data.getTime() === hoje.getTime()) return "Hoje";
+    if (data.getTime() === ontem.getTime()) return "Ontem";
+
+    return data.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+  };
+
+  const getUltimosDias = () => {
+    const dias = [];
+    for (let i = 0; i < diasFiltro; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const iso = d.toISOString().split('T')[0];
+        dias.push(iso);
+    }
+    return dias;
+  };
 
   return (
     <div className="flex min-h-screen bg-[#0F0F0F] text-white font-sans selection:bg-green-500/30 overflow-x-hidden">
@@ -177,7 +232,13 @@ export default function Agua() {
                       + {ml}ml
                     </button>
                   ))}
-                  <button className="bg-[#4ADE80]/10 border border-[#4ADE80]/40 hover:bg-[#4ADE80]/20 px-7 py-3 rounded-xl text-sm font-bold text-[#4ADE80] flex items-center gap-2">
+                  <button 
+                    onClick={() => {
+                        const amount = prompt("Quantidade em ml:");
+                        if (amount && !isNaN(amount)) addAgua(parseInt(amount));
+                    }}
+                    className="bg-[#4ADE80]/10 border border-[#4ADE80]/40 hover:bg-[#4ADE80]/20 px-7 py-3 rounded-xl text-sm font-bold text-[#4ADE80] flex items-center gap-2"
+                  >
                     <Droplets className="w-4 h-4" /> Personalizado
                   </button>
                 </div>
@@ -185,24 +246,39 @@ export default function Agua() {
             </div>
 
             {/* HISTÓRICO */}
-            <div className="bg-[#141414] rounded-[24px] p-8">
+            <div className="bg-[#141414] rounded-[24px] p-8 flex flex-col h-[500px]">
               <div className="flex items-center justify-between mb-10">
                 <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-500">
                   HISTÓRICO RECENTE
                 </h2>
-                <div className="bg-[#1C1C1C] px-3 py-1.5 rounded-lg text-[10px] font-bold text-neutral-500 flex items-center gap-2">
-                  7 dias <ChevronDown className="w-3 h-3" />
-                </div>
+                <select 
+                  value={diasFiltro}
+                  onChange={(e) => setDiasFiltro(parseInt(e.target.value))}
+                  className="bg-[#1C1C1C] px-3 py-1.5 rounded-lg text-[10px] font-bold text-neutral-500 border-none outline-none cursor-pointer appearance-none text-center"
+                >
+                  <option value={7}>7 DIAS</option>
+                  <option value={15}>15 DIAS</option>
+                  <option value={30}>30 DIAS</option>
+                </select>
               </div>
-              <div className="space-y-8">
-                {["Hoje", "Ontem", "Sex", "Qui", "Qua", "Ter", "Seg"].map(
-                  (dia, idx) => {
-                    const vals = [1.2, 2.5, 2.8, 1.7, 2.1, 2.6, 1.9];
-                    const w = Math.min((vals[idx] / metaDiaria) * 100, 100);
+              <div className="space-y-8 overflow-y-auto pr-2 custom-scrollbar">
+                {getUltimosDias().map((dataIso) => {
+                    const registro = historico.find(h => {
+                        // O banco pode retornar 'data' como Date ou string formatada
+                        const hData = h.data instanceof Date 
+                            ? h.data.toISOString().split('T')[0] 
+                            : h.data.split('T')[0];
+                        return hData === dataIso;
+                    });
+                    
+                    const valorML = registro ? registro.total : 0;
+                    const valorL = valorML / 1000;
+                    const w = Math.min((valorL / metaDiaria) * 100, 100);
+                    
                     return (
-                      <div key={dia} className="flex items-center gap-4">
-                        <div className="text-[11px] font-bold text-neutral-500 w-12">
-                          {dia}
+                      <div key={dataIso} className="flex items-center gap-4">
+                        <div className="text-[11px] font-bold text-neutral-500 w-14 capitalize">
+                          {formatarData(dataIso)}
                         </div>
                         <div className="flex-1 bg-[#1C1C1C] h-2 rounded-full overflow-hidden">
                           <div
@@ -211,12 +287,11 @@ export default function Agua() {
                           ></div>
                         </div>
                         <div className="text-[11px] font-bold text-neutral-400 w-10 text-right">
-                          {vals[idx].toFixed(1).replace(".", ",")} L
+                          {valorL.toFixed(1).replace(".", ",")} L
                         </div>
                       </div>
                     );
-                  },
-                )}
+                })}
               </div>
             </div>
           </div>
@@ -233,13 +308,17 @@ export default function Agua() {
                     Peso Atual
                   </label>
                   <input
-                    type="text"
-                    readOnly
-                    value={`${peso} kg`}
-                    className="w-full bg-[#0F0F0F] rounded-xl px-5 py-4 text-xl font-bold border-none"
+                    type="number"
+                    value={peso}
+                    onChange={(e) => setPeso(e.target.value)}
+                    className="w-full bg-[#0F0F0F] rounded-xl px-5 py-4 text-xl font-bold border border-white/5 focus:border-[#4ADE80]/50 outline-none transition-all"
+                    placeholder="Peso em kg"
                   />
                 </div>
-                <button className="w-full bg-[#2D7336] hover:bg-[#3b8e46] text-white font-bold py-4 rounded-xl text-[11px] uppercase tracking-widest transition-all">
+                <button 
+                  onClick={calcularMeta}
+                  className="w-full bg-[#2D7336] hover:bg-[#3b8e46] text-white font-bold py-4 rounded-xl text-[11px] uppercase tracking-widest transition-all"
+                >
                   Calcular meta
                 </button>
               </div>
@@ -247,9 +326,10 @@ export default function Agua() {
                 {["Sedentário", "Moderado", "Ativo"].map((n) => (
                   <div
                     key={n}
-                    className={`p-4 rounded-xl border ${n === nivelAtividade ? "border-[#4ADE80] bg-[#4ADE80]/10 text-white" : "border-transparent bg-[#1C1C1C] text-neutral-500"} text-xs font-bold transition-all`}
+                    onClick={() => setNivelAtividade(n)}
+                    className={`p-4 rounded-xl border cursor-pointer transition-all ${n === nivelAtividade ? "border-[#4ADE80] bg-[#4ADE80]/10 text-white" : "border-white/5 bg-[#1C1C1C] text-neutral-500 hover:bg-neutral-800"}`}
                   >
-                    {n}
+                    <div className="text-xs font-bold">{n}</div>
                   </div>
                 ))}
               </div>
@@ -257,7 +337,7 @@ export default function Agua() {
                 <div className="bg-[#1C1C1C] p-8 rounded-2xl flex items-center justify-between border border-white/5">
                   <div>
                     <div className="text-4xl font-black">
-                      2,1
+                      {minimoIdeal.toFixed(1).replace(".", ",")}
                       <span className="text-sm font-light text-neutral-600 ml-1">
                         L
                       </span>

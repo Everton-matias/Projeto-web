@@ -44,3 +44,16 @@ body {
     @apply min-h-screen w-screen bg-gradient-to-b from-[#111111] to-[#111111];
   }
 } */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #1c1c1c;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #252525;
+}
