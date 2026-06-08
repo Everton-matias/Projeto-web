@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext";
 export function Navigation() {
   const { user, signout } = useAuth();
   const location = useLocation();
+  const isEditProfilePage = location.pathname === "/editar-perfil";
 
   let abaAtiva = "inicio";
   if (location.pathname.startsWith("/profile")) {
@@ -48,22 +49,23 @@ export function Navigation() {
               Início
             </Link>
           </li>
-          <li>
-            <Link to="/profile" className={itemClass("perfil")}>
-              <User className="h-5 w-5" />
-              Perfil
-            </Link>
-          </li>
+
           <li>
             <Link to="/agua" className={itemClass("agua")}>
               <Droplets className="h-5 w-5" />
               Água
             </Link>
           </li>
+          <li>
+            <Link to="/profile" className={itemClass("perfil")}>
+              <User className="h-5 w-5" />
+              Perfil
+            </Link>
+          </li>
         </ul>
       </nav>
 
-      {user && (
+      {user && isEditProfilePage && (
         <div className="mt-auto rounded-3xl border border-white/10 bg-white/5 p-4 text-sm text-white/90 shadow-xl shadow-black/10 flex flex-col items-center gap-3">
           <p className="font-semibold text-white flex justify-center items-center">
             {user.nome_completo || user.name || user.email}
