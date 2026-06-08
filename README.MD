@@ -1,27 +1,68 @@
-# Not Fat
+# NOT FAT
 
-## Visão geral
-
-O projeto Not Fat é uma aplicação full stack voltada para acompanhamento de refeições, cadastro de alimentos e informações sobre suplementos. A interface foi construída com React + Vite, e o backend foi desenvolvido com Node.js + Express para autenticação e integração com um banco MySQL.
-
-O sistema atual oferece:
-
-- login com conta Google;
-- visualização e gerenciamento de refeições;
-- adição e remoção de alimentos por refeição;
-- perfil do usuário com dados básicos;
-- tela de edição do perfil;
-- seção informativa com dicas sobre suplementos.
+Aplicação full stack para gerenciamento de refeições, controle de hidratação e acesso a informações nutricionais e suplementação.
 
 ---
 
-## Objetivo do projeto
+## Visão Geral
 
-Auxiliar o usuário a organizar melhor sua rotina alimentar, registrar alimentos por refeição e acessar informações úteis sobre hábitos e suplementação relacionados à saúde e ao desempenho.
+O Not Fat foi desenvolvido para auxiliar usuários a manterem uma rotina alimentar mais organizada, permitindo registrar refeições, controlar o consumo diário de água e acessar conteúdos informativos relacionados à saúde e desempenho físico.
+
+A aplicação utiliza React no frontend, Node.js com Express no backend e MySQL para armazenamento dos dados.
 
 ---
 
-## Tecnologias utilizadas
+## Principais Funcionalidades
+
+###  Autenticação
+
+- Login com Google OAuth
+- Validação do token no backend
+- Cadastro automático do usuário
+- Persistência da sessão
+
+###  Gerenciamento de Refeições
+
+- Visualização das refeições do dia
+- Adição de alimentos
+- Remoção de alimentos
+- Expansão e recolhimento das refeições
+- Atualização dinâmica dos dados
+
+###  Controle de Hidratação
+
+- Registro de consumo diário de água
+- Adição rápida de quantidades pré-definidas
+- Adição personalizada em mililitros
+- Meta diária baseada no peso corporal
+- Ajuste por nível de atividade física
+- Histórico de consumo
+
+###  Histórico de Consumo
+
+- Visualização dos últimos 7 dias
+- Visualização dos últimos 15 dias
+- Visualização dos últimos 30 dias
+- Comparação entre consumo e meta diária
+
+###  Perfil
+
+- Visualização dos dados do usuário
+- Atualização do nome
+- Sincronização com banco de dados
+- Atualização automática da sessão
+
+###  Informações Nutricionais
+
+- Whey Protein
+- Creatina
+- Pré-Treino
+- Vitaminas
+- Recomendações gerais de suplementação
+
+---
+
+## Tecnologias Utilizadas
 
 ### Frontend
 
@@ -41,154 +82,148 @@ Auxiliar o usuário a organizar melhor sua rotina alimentar, registrar alimentos
 - CORS
 - Dotenv
 - Google Auth Library
-- JWT (preparado para autenticação com tokens)
+- JWT
+
+### DevOps
+
+- Docker
+- Docker Compose
 
 ---
 
-## Estrutura do projeto
+## Estrutura do Projeto
 
 ```text
 Projeto-web/
 ├── frontend/
 │   └── src/
-│       ├── componentes/         # componentes reutilizáveis
-│       ├── contexts/            # autenticação e rotas privadas
-│       ├── pages/               # telas principais
-│       └── assets/              # imagens e ícones
+│       ├── componentes/
+│       ├── contexts/
+│       ├── pages/
+│       └── assets/
+│
 ├── backend/
-│   ├── app.js                  # servidor Express e rotas
-│   └── package.json            # dependências do backend
-├── package.json                # dependências e scripts do frontend
-└── vite.config.js             # configuração do Vite
+│   ├── app.js
+│   ├── package.json
+│   └── Dockerfile
+│
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+└── vite.config.js
 ```
 
 ---
 
-## Funcionalidades principais
+## Rotas Frontend
 
-### 1. Autenticação
-
-- Login realizado com Google OAuth.
-- O token recebido pelo frontend é validado no backend.
-- O usuário é criado ou localizado no banco de dados com base no email.
-
-### 2. Refeições
-
-- O usuário pode visualizar as refeições cadastradas: Desjejum, Café da manhã, Almoço, Lanche da tarde, Jantar e Ceia.
-- É possível adicionar alimentos à refeição selecionada.
-- Também é possível excluir itens já adicionados.
-
-### 3. Perfil do usuário
-
-- Exibe nome e email do usuário autenticado.
-- Possui tela de edição para atualizar o nome.
-
-### 4. Informações adicionais
-
-- A home exibe blocos informativos com dicas sobre suplementos como Whey Protein, Creatina, Pré-treino e Hipercalórico.
+| Rota | Descrição |
+|--------|------------|
+| /login | Tela de autenticação |
+| / | Dashboard principal |
+| /profile | Perfil do usuário |
+| /editar-perfil | Edição do perfil |
+| /agua | Controle de hidratação |
 
 ---
 
-## Rotas principais
+## Rotas Backend
 
-### Frontend
-
-- `/login` — tela de autenticação
-- `/` — página inicial com refeições e informações
-- `/profile` — perfil do usuário
-- `/editar-perfil` — edição de dados do perfil
-
-### Backend (API)
-
-- `POST /login` — autenticação do usuário
-- `POST /adicionar` — adicionar alimento a uma refeição
-- `GET /alimentos` — listar alimentos disponíveis
-- `GET /usuario/:idUsuario` — buscar usuário por ID
-- `GET /refeicao/:idUsuario/:idRefeicao` — listar alimentos de uma refeição
-- `DELETE /refeicao/:idUsuario/:idRefeicao/:idAlimento` — remover alimento
-- `PUT /usuario/:idUsuario` — atualizar nome do usuário
+| Método | Endpoint | Descrição |
+|----------|------------|------------|
+| POST | /login | Autenticação |
+| POST | /adicionar | Adicionar alimento |
+| POST | /agua | Registrar consumo de água |
+| GET | /alimentos | Listar alimentos |
+| GET | /usuario/:idUsuario | Buscar usuário |
+| GET | /refeicao/:idUsuario/:idRefeicao | Buscar alimentos da refeição |
+| GET | /agua/:idUsuario | Buscar consumo de água |
+| PUT | /usuario/:idUsuario | Atualizar usuário |
+| DELETE | /refeicao/:idUsuario/:idRefeicao/:idAlimento | Remover alimento |
 
 ---
 
-## Variáveis de ambiente
+## Variáveis de Ambiente
 
 ### Frontend
 
-O projeto utiliza a variável:
-
-- `VITE_GOOGLE_CLIENT_ID`
-
-Ela deve ser configurada no arquivo `.env` da raiz do projeto.
+```env
+VITE_GOOGLE_CLIENT_ID=
+```
 
 ### Backend
 
-O backend depende de variáveis como:
-
-- `db_host`
-- `db_port`
-- `db_user`
-- `db_password`
-- `db_database`
-- `PORT`
-- `DB_SSL_CA` (quando necessário)
-
-Essas configurações ficam no arquivo `.env` dentro da pasta `backend/`.
+```env
+db_host=
+db_port=
+db_user=
+db_password=
+db_database=
+PORT=
+DB_SSL_CA=
+```
 
 ---
 
-## Como executar o projeto
+## Execução Local
 
-### 1. Instalar dependências
-
-Na raiz do projeto:
+### Instalar Dependências
 
 ```bash
 npm install
-```
 
-No backend:
-
-```bash
 cd backend
 npm install
 ```
 
-### 2. Configurar variáveis de ambiente
-
-Crie os arquivos `.env` conforme necessário:
-
-- raiz: `VITE_GOOGLE_CLIENT_ID=...`
-- backend: variáveis de conexão com o banco e credenciais do Google, se aplicável
-
-### 3. Iniciar o backend
+### Iniciar Backend
 
 ```bash
 cd backend
 npm start
 ```
 
-O servidor será iniciado normalmente na porta `3000`.
-
-### 4. Iniciar o frontend
-
-Na raiz do projeto:
+### Iniciar Frontend
 
 ```bash
 npm run dev
 ```
 
-O painel do Vite geralmente será aberto em `http://localhost:5173`.
+---
+
+## Execução com Docker
+
+### Construir e iniciar os containers
+
+```bash
+docker-compose up --build
+```
+
+### Endereços
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+Backend:
+
+```text
+http://localhost:3000
+```
 
 ---
 
-## Observações importantes
+## Observações
 
-- O backend depende de um banco MySQL ativo para funcionar corretamente.
-- A autenticação com Google exige um `client ID` válido configurado no projeto.
-- O arquivo `.env` com credenciais sensíveis não deve ser compartilhado publicamente.
+- É necessário possuir um banco MySQL configurado.
+- O login requer credenciais válidas do Google OAuth.
+- Os arquivos `.env` não devem ser enviados ao repositório.
+- O Docker Compose permite executar toda a aplicação com um único comando.
 
 ---
 
-## Resumo
+## Objetivo
 
-Este projeto combina uma interface moderna em React com uma API em Express e banco MySQL para oferecer uma experiência prática de controle alimentar, autenticação segura e consulta de informações úteis para a rotina de treino e alimentação.
+O Not Fat busca oferecer uma experiência simples e intuitiva para acompanhamento alimentar e controle de hidratação, reunindo em uma única plataforma ferramentas úteis para organização da rotina, monitoramento de hábitos e acesso a conteúdos informativos relacionados à saúde e suplementação.
