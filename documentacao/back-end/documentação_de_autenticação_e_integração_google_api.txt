@@ -1,0 +1,234 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PROJETO CÓDIGOS DE ALTA PERFORMANCE - WEB
+%% UNINASSAU - CIÊNCIA DA COMPUTAÇÃO
+%% MODELO COMPLETO ABNTEX2 - OVERLEAF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+    12pt,
+    oneside,
+    openright,
+    a4paper,
+    english,
+    brazil
+]{abntex2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  PACOTES                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            CONFIGURAÇÕES GERAIS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\OnehalfSpacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%          CAMINHO DAS IMAGENS                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{Imagem/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%        REMOVE PÁGINAS EM BRANCO                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\patchcmd{\chapter}
+{\if@openright\cleardoublepage\else\clearpage\fi}
+{\clearpage}{}{}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         CONFIGURAÇÃO DE CÓDIGOS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{green},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{black},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  INÍCIO                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    CAPA                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+\includegraphics[width=5cm]{logo-uninassau.png}
+
+\vspace{1cm}
+
+{\large \textbf{CENTRO UNIVERSITÁRIO MAURÍCIO DE NASSAU}}
+
+\vspace{0.3cm}
+
+{\large CURSO DE CIÊNCIA DA COMPUTAÇÃO}
+
+\vspace{3cm}
+
+{\Huge \textbf{DOCUMENTAÇÃO DE AUTENTICAÇÃO E INTEGRAÇÃO GOOGLE API
+}}
+
+\vspace{1cm}
+
+{\Large Desenvolvimento do Fluxo de Segurança para o projeto do site Not Fat }
+
+\vspace{3cm}
+
+\textbf{Responsável}
+
+
+Eduardo Felipe da Silva Gomes - 01832424\\
+
+
+
+\vfill
+
+Disciplina: Códigos de Alta Performance - Web\\
+Professor(a): Anderlan Henrique Batista Siqueira
+
+\vspace{2cm}
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    RESUMO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Resumo}
+
+Este módulo compreende a arquitetura de segurança, controle de sessão e consumo da API de Autenticação do Google no Front-End do sistema Not Fat. Desenvolvido em React.js, o sistema utiliza o padrão de Contexto Global (Context API) combinado com persistência local para garantir que o fluxo de login seja seguro, transparente e performático.
+
+A principal função desta estrutura é validar a identidade do usuário através dos tokens emitidos pelo Google, gerenciar o estado global de autenticação e interceptar rotas protegidas no ecossistema do cliente (Front-End), trabalhando em total sincronia com as validações de segurança executadas no Back-End.
+
+Basicamente, a arquitetura de autenticação fornecida subdivide-se em:
+
+- Gerenciamento de Ciclo de Vida do Token: Armazenamento, leitura inicial e expurgo dos dados de autenticação sincronizados com o Google.
+
+- Barreiras de Navegação (Middleware de Rotas): Bloqueio programático de componentes baseado no estado dinâmico de login.
+
+- Consumo de Claims e Identidade: Estruturação das propriedades de identificação do usuário (idUsuario, email, nome) para persistência e requisições seguras.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                 Estrutura e Fluxo de Autenticação               %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Estrutura e Fluxo de Autenticação }
+
+\section{Contexto de Autenticação (AuthProvider)}
+
+O mecanismo centraliza as operações de login e logout, servindo como uma fonte única de verdade (\textit{Single Source of Truth}) para a identidade do usuário na aplicação. 
+
+Persistência em Cache (localStorage): O estado inicial do usuário é avaliado através de uma função de inicialização preguiçosa (lazy state initialization) que busca a chave @NotFat:user. Isso evita a perda de sessão quando a página é atualizada. Se o dado estiver corrompido ou ausente, o estado falha silenciosamente para null.
+
+Sincronização Baseada em Efeitos (useEffect):
+Monitorea o ciclo de vida do objeto user. Sempre que houver uma alteração (como o gatilho de login ou logout), o efeito colateral atualiza o armazenamento local, inserindo a string JSON correspondente ou removendo a chave por completo.
+
+Gatilho de Entrada (signin(userData)):
+Função responsável por receber o objeto de dados encapsulado após a validação bem-sucedida do token do Google e injetá-lo no estado ativo da aplicação.
+
+Gatilho de Saída (signout()):
+Limpa completamente o estado do usuário (null), o que dispara o efeito colateral de remoção dos dados do localStorage, invalidando imediatamente a sessão do cliente.
+
+\section{Filtros e Proteção de Rotas}
+
+O sistema delega a segurança visual e o controle de acesso às rotas através de validações condicionais em tempo de execução.
+
+Prevenção de Acesso Duplo ao Login:
+Um efeito colateral monitora se um usuário já autenticado tenta forçar a navegação para a página /login. Caso isso ocorra, o React Router realiza um redirecionamento limpo com substituição de histórico (replace: true) de volta para a raiz (/), impedindo comportamentos inconsistentes na interface.
+
+Barreira de Segurança (PrivateRoute):
+Atua como um componente de ordem superior (Higher-Order Component). Ele consome os dados do useAuth() e realiza uma checagem binária:
+
+Se o objeto user não existir, ele interrompe a renderização dos componentes filhos e dispara uma navegação forçada para a rota /login.
+
+Se o usuário estiver ativo, ele concede acesso total e renderiza o conteúdo protegido da aplicação (children).
+
+\section{Mapeamento de Atributos do Google Sign-In}
+
+Para garantir resiliência contra variações na estrutura de dados enviada pela API do Google ou respostas de espelhamento do Back-End, o componente de exibição de perfil implementa uma estratégia de fallback (recuperação) para o mapeamento dos dados de identidade: 
+
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4} 
+\begin{tabular}{|p{3.5cm}|p{8.2cm}|p{3.5cm}|}
+\hline
+\textbf{Atributo Esperado}& \textbf{Estratégia de Captura}& \textbf{Finalidade no Sistema}\\ \hline
+
+Identificação do Usuário& 
+user?.idUsuario || user?.id& 
+Chave primária de identificação usada para indexar consumos e diários.\\ \hline
+
+Nome do Usuário& 
+user?.nome_completo || user?.name || user?.nome& 
+Nome sincronizado da conta Google para exibição na interface.\\ \hline
+
+E-mail Cadastrado& 
+user?.email& 
+Identificador de comunicação seguro e único vinculado à conta.\\\hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    FIM                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
