@@ -1,0 +1,477 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PROJETO WEB - AV2
+%% UNINASSAU - CIÊNCIA DA COMPUTAÇÃO
+%% MODELO COMPLETO ABNTEX2 - OVERLEAF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+    12pt,
+    oneside,
+    openright,
+    a4paper,
+    english,
+    brazil
+]{abntex2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  PACOTES                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            CONFIGURAÇÕES GERAIS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\OnehalfSpacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%          CAMINHO DAS IMAGENS                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{Imagens/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%        REMOVE PÁGINAS EM BRANCO                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\patchcmd{\chapter}
+{\if@openright\cleardoublepage\else\clearpage\fi}
+{\clearpage}{}{}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         CONFIGURAÇÃO DE CÓDIGOS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{green},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{black},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  INÍCIO                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    CAPA                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+\includegraphics[width=5cm]{imagens/logo-uninassau.png}
+
+\vspace{1cm}
+
+{\large \textbf{CENTRO UNIVERSITÁRIO MAURÍCIO DE NASSAU}}
+
+\vspace{0.3cm}
+
+{\large CURSO DE CIÊNCIA DA COMPUTAÇÃO}
+
+\vspace{2cm}
+
+{\Huge \textbf{PROJETO NOT FAT}}
+
+\vspace{1cm}
+
+{\Large Desenvolvimento de Sistema Web com React}
+
+\vspace{2cm}
+
+\textbf{Integrantes}
+
+Anderson Vieira\\
+Everton Matias\\
+Eduardo Felipe\\
+Fernando Gabriel\\
+Humberto Alves\\
+Italo Henrique\\
+João Carlos\\
+Victor de Alessandrine
+
+
+\vfill
+
+Disciplina: Código de Alta Performance -- Web\\
+Professor(a): Anderlan Henrique
+
+\vspace{2cm}
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                 CONTRACAPA                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+NOME DOS ALUNOS\\
+Anderson Vieira dos Santos\\
+Eduardo Felipe da Silva Gomes\\
+Everton Matias da Silva\\
+Fernando Gabriel Souza de Lima\\
+Humberto Alves da Silva\\
+João Carlos Oliveira da Silva\\
+Italo Henrique\\
+Victor de Alessandrine Mendonça Lopes
+
+\vspace{4cm}
+
+{\Large \textbf{PROJETO NOT FAT}}
+
+\vspace{4cm}
+
+\begin{flushright}
+
+Trabalho apresentado à disciplina de Código de Alta Performance -- Web do curso de Ciência da Computação do Centro Universitário Maurício de Nassau — UNINASSAU, como requisito para obtenção da nota da AV2.
+
+\vspace{1cm}
+
+Professor(a): Anderlan Henrique
+
+\end{flushright}
+
+\vfill
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    RESUMO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Resumo}
+
+Este trabalho apresenta o desenvolvimento do Sistema Web \textbf{NOT FAT}, uma aplicação \textit{full stack} para gerenciamento de refeições, controle de hidratação e acesso a informações nutricionais, desenvolvida com React para navegadores Web. O sistema permite que o usuário registre suas refeições diárias organizadas por blocos (Café da Manhã, Almoço, Jantar e outros), acompanhe o consumo hídrico diário com base em metas personalizadas e consulte informações sobre suplementação. O sistema utiliza autenticação de usuário via Google OAuth com persistência de dados em MySQL, proporcionando uma experiência personalizada e segura. O backend foi implementado com Node.js e Express, expondo uma API REST consumida pelo frontend. A aplicação é containerizada com Docker e Docker Compose, permitindo execução padronizada em qualquer ambiente. O projeto foi desenvolvido no contexto acadêmico da disciplina de Código de Alta Performance Web, aplicando conceitos de engenharia de software, levantamento de requisitos, modelagem de sistemas, prototipação no Figma e desenvolvimento iterativo com versionamento no GitHub.
+
+\vspace{0.5cm}
+
+\textbf{Palavras-chave:} React. Sistema Web. Navegador. Monitoramento Nutricional. MySQL. Node.js. API REST. Docker. Figma. GitHub.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                   ABSTRACT                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Abstract}
+
+This paper presents the development of the NOT FAT Web System, a full stack application for meal management, hydration control, and access to nutritional information, developed with React for web browsers. The system allows users to log their daily meals organized into blocks (Breakfast, Lunch, Dinner, and custom blocks), track daily water intake based on personalized goals, and consult supplementation information. The system uses Google OAuth authentication with data persistence in MySQL, providing a personalized and secure experience. The backend was implemented with Node.js and Express, exposing a REST API consumed by the frontend. The application is containerized with Docker and Docker Compose, enabling standardized execution in any environment. The project was developed in the academic context of the High-Performance Web Coding course, applying software engineering concepts, requirements gathering, system modeling, prototyping in Figma, and iterative development with GitHub versioning.
+
+\vspace{0.5cm}
+
+Keywords: React. Web System. Browser. Nutritional Monitoring. MySQL. Node.js. REST API. Docker. Figma. GitHub.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                   SUMÁRIO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                 INTRODUÇÃO                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Introdução}
+
+\section{Contextualização}
+
+O crescimento acelerado do uso de sistemas Web transformou os navegadores em ferramentas indispensáveis no cotidiano da população. Aplicações acessíveis diretamente pelo navegador, sem necessidade de instalação, democratizaram o acesso a serviços digitais nas mais diversas áreas, e os segmentos relacionados à saúde e bem-estar estão entre as categorias com maior crescimento nesse contexto.
+
+Nesse cenário, a alimentação saudável emerge como uma preocupação crescente, especialmente entre jovens adultos que buscam equilíbrio entre rotina agitada e qualidade de vida. O monitoramento do consumo alimentar e da hidratação diária, antes restrito a diários escritos ou planilhas complexas, passou a encontrar nos navegadores um canal acessível e prático para o registro e acompanhamento de hábitos saudáveis.
+
+\section{Problema}
+
+Apesar da abundância de sistemas de saúde disponíveis no mercado, muitos apresentam interfaces complexas, funcionalidades excessivas para o usuário iniciante ou barreiras de acessibilidade como idioma estrangeiro e modelos de assinatura pagos. Pessoas que desejam simplesmente registrar o que comem e quanto bebem de água encontram dificuldade ao buscar uma solução leve, objetiva e gratuita em português, acessível diretamente pelo navegador sem qualquer instalação.
+
+\section{Justificativa}
+
+O projeto \textbf{NOT FAT} foi desenvolvido com o objetivo de preencher essa lacuna, oferecendo uma solução Web simples, funcional e acessível para o monitoramento nutricional diário e o controle de hidratação. Além do impacto prático para o usuário final, o projeto representa uma oportunidade concreta de aplicação dos conhecimentos adquiridos na disciplina de Código de Alta Performance Web, abrangendo desde o planejamento e levantamento de requisitos até a implementação, testes e documentação de um sistema \textit{full stack} real utilizando React, Node.js, MySQL e Docker.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  OBJETIVOS                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Objetivos}
+
+\section{Objetivo Geral}
+
+Desenvolver uma aplicação Web \textit{full stack} funcional utilizando React no frontend e Node.js com Express no backend, que permita ao usuário monitorar sua alimentação e consumo hídrico diários, com autenticação segura via Google OAuth, banco de dados MySQL e infraestrutura containerizada via Docker.
+
+\section{Objetivos Específicos}
+
+\begin{itemize}
+
+    \item Desenvolver interfaces intuitivas e responsivas seguindo as diretrizes de UX Web, com base em protótipo elaborado no Figma;
+    \item Implementar navegação entre páginas utilizando React Router DOM;
+    \item Implementar autenticação de usuário com login via Google OAuth 2.0;
+    \item Integrar o frontend a uma API REST própria desenvolvida com Node.js e Express, com banco de dados MySQL para persistência de dados;
+    \item Desenvolver o módulo de gerenciamento de refeições diárias organizado por blocos (Café da Manhã, Almoço, Jantar e personalizados), com adição e remoção dinâmica de alimentos;
+    \item Desenvolver o módulo de monitoramento de consumo hídrico diário com meta personalizada por peso corporal e nível de atividade física;
+    \item Desenvolver o módulo de histórico de consumo com visualização dos últimos 7, 15 e 30 dias;
+    \item Desenvolver o módulo de informações nutricionais e recomendações de suplementação;
+    \item Desenvolver o módulo de perfil do usuário com dados pessoais editáveis e sincronização com o banco de dados;
+    \item Containerizar a aplicação utilizando Docker e Docker Compose para facilitar a execução e entrega do projeto;
+    \item Realizar testes funcionais nos principais navegadores para validação das funcionalidades implementadas;
+    \item Versionar o código-fonte no GitHub com histórico de commits organizado.
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%             REFERENCIAL TEÓRICO                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Referencial Teórico}
+
+\section{Aplicações Web}
+
+Aplicações web são softwares acessados por meio de navegadores, sem necessidade de instalação, desenvolvidos com tecnologias como HTML, CSS e JavaScript. No contexto da saúde, as aplicações web têm demonstrado potencial significativo para apoiar mudanças de comportamento relacionadas à alimentação e à prática de atividade física, funcionando como ferramentas de autorregulação e monitoramento contínuo acessíveis ao usuário a partir de qualquer dispositivo com conexão à internet e um navegador moderno.
+
+\section{React}
+
+React é uma biblioteca JavaScript de código aberto desenvolvida pelo Facebook (atual Meta) para a construção de interfaces de usuário. Sua principal característica reside no uso de componentes reutilizáveis e no conceito de Virtual DOM, que otimiza a atualização da interface sem recarregar a página inteira, proporcionando uma experiência fluida ao usuário. No projeto NOT FAT, o React 19 foi adotado como tecnologia principal do frontend web por sua ampla adoção no mercado, vasta comunidade de suporte e compatibilidade com bibliotecas modernas como React Router DOM, Tailwind CSS e Lucide React.
+
+\section{Node.js e Express}
+
+Node.js é um ambiente de execução JavaScript do lado do servidor baseado no motor V8 do Google Chrome. Sua arquitetura orientada a eventos e não bloqueante o torna eficiente para aplicações que demandam alto volume de requisições simultâneas, como APIs REST. O Express é um \textit{framework} minimalista para Node.js que simplifica a criação de servidores HTTP e o roteamento de requisições. No projeto NOT FAT, Node.js com Express foi adotado para implementar o backend da aplicação, responsável por expor os endpoints da API REST consumidos pelo frontend.
+
+\section{Tailwind CSS}
+
+Tailwind CSS é um \textit{framework} de estilização baseado em classes utilitárias que permite construir interfaces diretamente no HTML/JSX sem a necessidade de escrever CSS personalizado para cada componente. Sua abordagem \textit{utility-first} favorece a consistência visual, acelera o desenvolvimento e reduz o tamanho final dos arquivos de estilo por meio de otimização em produção. No projeto NOT FAT, o Tailwind CSS foi adotado como solução principal de estilização, garantindo uma interface responsiva e visualmente coerente em todos os breakpoints.
+
+\section{Vite}
+
+Vite é uma ferramenta de construção (\textit{build tool}) moderna para projetos frontend que oferece um servidor de desenvolvimento extremamente rápido baseado em módulos ES nativos, além de bundling otimizado para produção utilizando Rollup. No projeto NOT FAT, o Vite 8 foi utilizado como \textit{bundler} e servidor de desenvolvimento do frontend React, substituindo ferramentas mais pesadas como Create React App e proporcionando tempos de inicialização e recarregamento consideravelmente menores.
+
+\section{Banco de Dados}
+
+O MySQL é um sistema de gerenciamento de banco de dados relacional (SGBDR) de código aberto amplamente utilizado em aplicações web. Baseado na linguagem SQL (Structured Query Language), organiza os dados em tabelas relacionadas entre si por chaves primárias e estrangeiras, garantindo integridade referencial e consistência dos dados. No projeto NOT FAT, o MySQL foi escolhido para armazenar os dados dos usuários, refeições, alimentos cadastrados e registros de consumo hídrico. A comunicação com o banco foi realizada pelo driver \texttt{mysql2} no backend Node.js, com suporte a conexão SSL para ambientes de produção.
+
+\section{APIs e Autenticação}
+
+Uma API REST (Representational State Transfer) é um conjunto de convenções arquiteturais para a construção de serviços web que permitem a comunicação entre sistemas por meio do protocolo HTTP. No projeto NOT FAT, o backend da aplicação expõe uma API REST própria responsável pela autenticação do usuário e pela persistência dos dados no banco. A autenticação é realizada via Google OAuth 2.0: o frontend autentica o usuário diretamente com o Google por meio da biblioteca \texttt{google-oauth-react} e envia o token recebido ao backend, onde ele é validado com a biblioteca \texttt{google-auth-library}. Após a validação, o backend emite um token JWT (JSON Web Token) para autorização das requisições subsequentes.
+
+\section{Figma e Prototipação}
+
+O Figma é uma ferramenta de design de interfaces colaborativa baseada em nuvem, amplamente utilizada por equipes de produto para a criação de wireframes, protótipos e sistemas de design. No desenvolvimento do NOT FAT, o Figma foi utilizado na fase de UX/UI para a criação do mockup de referência das telas da aplicação web, permitindo que a equipe alinhasse visualmente o produto antes do início da implementação, reduzindo retrabalho no desenvolvimento.
+
+\section{GitHub e Versionamento}
+
+O GitHub é uma plataforma de hospedagem de código-fonte baseada no sistema de controle de versão Git, que permite o trabalho colaborativo em software por meio de branches, commits, pull requests e revisões de código. No projeto NOT FAT, o GitHub foi adotado como repositório central do código-fonte, com padrão de commits definido pela equipe para garantir rastreabilidade das alterações ao longo do desenvolvimento.
+
+\section{Docker e Containerização}
+
+O Docker é uma plataforma de código aberto que permite empacotar aplicações e suas dependências em contêineres isolados, garantindo que o software execute de forma consistente em qualquer ambiente. Por meio do \textit{docker-compose}, é possível orquestrar múltiplos serviços — como frontend, backend e banco de dados — com um único comando. No projeto NOT FAT, o Docker foi adotado como requisito técnico da disciplina, sendo utilizado para containerizar separadamente o frontend (servido via Vite) e o backend (Node.js/Express), permitindo que toda a aplicação seja iniciada com o comando \texttt{docker-compose up --build} e acessada nos endereços \texttt{http://localhost:5173} (frontend) e \texttt{http://localhost:3000} (backend).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                 METODOLOGIA                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Metodologia}
+
+O desenvolvimento do projeto NOT FAT seguiu uma abordagem iterativa e incremental, organizada nas seguintes etapas: definição do escopo, levantamento de requisitos, prototipação no Figma, desenvolvimento, testes e documentação. A equipe foi dividida por frentes de trabalho (UI/UX, frontend, backend e documentação), com entregas parciais a cada ciclo de desenvolvimento e versionamento contínuo no GitHub.
+
+\section{Ferramentas Utilizadas}
+
+\begin{itemize}
+
+    \item \textbf{React 19} -- Biblioteca principal para desenvolvimento do frontend web;
+    \item \textbf{Vite 8} -- Ferramenta de build e servidor de desenvolvimento do frontend;
+    \item \textbf{React Router DOM} -- Biblioteca para gerenciamento de rotas e navegação entre páginas;
+    \item \textbf{Tailwind CSS} -- Framework de estilização utilitária utilizado na construção da interface;
+    \item \textbf{Lucide React e Font Awesome} -- Bibliotecas de ícones utilizadas na interface;
+    \item \textbf{Node.js com Express} -- Plataforma e framework para desenvolvimento do backend e da API REST;
+    \item \textbf{MySQL} -- Sistema de gerenciamento de banco de dados relacional para persistência dos dados;
+    \item \textbf{Google OAuth 2.0 e JWT} -- Mecanismo de autenticação e autorização dos usuários;
+    \item \textbf{Docker e Docker Compose} -- Plataforma de containerização utilizada para empacotar e executar a aplicação de forma padronizada;
+    \item \textbf{Figma} -- Ferramenta de prototipação e design das interfaces;
+    \item \textbf{Visual Studio Code} -- Editor de código-fonte principal da equipe;
+    \item \textbf{GitHub} -- Plataforma de versionamento e colaboração do código-fonte.
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%          LEVANTAMENTO DE REQUISITOS             %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Levantamento de Requisitos}
+
+\section{Requisitos Funcionais}
+
+\begin{longtable}{|p{2cm}|p{10cm}|}
+
+\hline
+\textbf{Código} & \textbf{Descrição} \\
+\hline
+
+RF01 & Login no sistema — O sistema deve autenticar o usuário via Google OAuth 2.0, validar o token no backend e manter a sessão ativa. \\
+\hline
+
+RF02 & Gerenciamento de Refeições — O sistema deve permitir visualizar, adicionar e remover alimentos nos blocos de refeição diários (Café da Manhã, Almoço, Jantar e personalizados), com expansão e recolhimento dinâmico e atualização em tempo real dos dados. \\
+\hline
+
+RF03 & Busca de alimentos — O sistema deve permitir buscar e listar alimentos disponíveis no banco de dados para adição às refeições. \\
+\hline
+
+RF04 & Controle de Hidratação — O sistema deve permitir ao usuário registrar o consumo de água ao longo do dia, com adição rápida de quantidades pré-definidas ou personalizada em mililitros, e acompanhar o progresso em relação à meta diária calculada com base no peso corporal e nível de atividade física. \\
+\hline
+
+RF05 & Histórico de Consumo — O sistema deve exibir o histórico de consumo hídrico dos últimos 7, 15 e 30 dias, com comparativo entre consumo realizado e meta diária. \\
+\hline
+
+RF06 & Perfil do Usuário — O sistema deve armazenar e permitir a visualização e edição de dados pessoais (nome), com sincronização imediata com o banco de dados e atualização automática da sessão. \\
+\hline
+
+RF07 & Informações Nutricionais — O sistema deve disponibilizar uma seção com informações e recomendações gerais sobre suplementação (Whey Protein, Creatina, Pré-Treino, Vitaminas). \\
+\hline
+
+RF08 & Navegação Global — O sistema deve oferecer navegação fluida entre as páginas por meio de React Router DOM, contemplando as rotas: \texttt{/login}, \texttt{/} (dashboard), \texttt{/agua}, \texttt{/profile} e \texttt{/editar-perfil}. \\
+\hline
+
+\end{longtable}
+
+\section{Requisitos Não Funcionais}
+
+\begin{longtable}{|p{2cm}|p{10cm}|}
+
+\hline
+\textbf{Código} & \textbf{Descrição} \\
+\hline
+
+RNF01 & Desempenho — A tela inicial deve carregar em menos de 2 segundos em conexões de banda larga padrão. \\
+\hline
+
+RNF02 & Compatibilidade — A aplicação deve ser compatível com os principais navegadores modernos: Google Chrome, Mozilla Firefox, Microsoft Edge e Safari. \\
+\hline
+
+RNF03 & Tempo de Resposta — As requisições à API REST do backend devem retornar resultados em no máximo 800 milissegundos em ambiente de rede local. \\
+\hline
+
+RNF04 & Manutenibilidade — O código deve seguir boas práticas de engenharia de software, com arquitetura definida (separação de \texttt{componentes}, \texttt{contexts}, \texttt{pages} no frontend e rotas no backend) e padrão de commits acordado pela equipe. \\
+\hline
+
+RNF05 & Containerização — A aplicação deve ser executável via Docker com um único comando (\texttt{docker-compose up --build}), sem necessidade de configuração manual do ambiente além das variáveis de ambiente definidas nos arquivos \texttt{.env}. \\
+\hline
+
+RNF06 & Segurança — As credenciais de acesso ao banco de dados e o Client ID do Google OAuth devem ser armazenadas exclusivamente em variáveis de ambiente, nunca expostas no código-fonte versionado. \\
+\hline
+
+\end{longtable}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%               MODELAGEM DO SISTEMA              %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Modelagem do Sistema}
+
+\section{Diagrama de Caso de Uso}
+
+O diagrama de caso de uso a seguir representa as principais interações entre o ator \textbf{Usuário} e o sistema NOT FAT, evidenciando os casos de uso contemplados no MVP web.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imagens/diagrama..jpeg}
+    \caption{Diagrama de Caso de Uso -- NOT FAT Web}
+    \label{fig:diagrama_uso}
+\end{figure}
+
+\section{Estrutura do Projeto}
+
+O projeto foi organizado em uma arquitetura monorepo com separação clara entre frontend e backend:
+
+\begin{itemize}
+    \item \texttt{frontend/src/componentes/} -- componentes React reutilizáveis da interface;
+    \item \texttt{frontend/src/contexts/} -- contextos de estado global via Context API;
+    \item \texttt{frontend/src/pages/} -- páginas correspondentes às rotas da aplicação;
+    \item \texttt{frontend/src/assets/} -- recursos estáticos (imagens, ícones);
+    \item \texttt{backend/app.js} -- ponto de entrada do servidor Express com definição das rotas da API;
+    \item \texttt{docker-compose.yml} -- arquivo de orquestração dos contêineres frontend e backend.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                UX E USABILIDADE                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{UX e Usabilidade}
+
+A experiência do usuário no NOT FAT foi planejada com foco em simplicidade, clareza visual e fluidez de navegação. O design foi elaborado no Figma antes do início do desenvolvimento, garantindo que a equipe tivesse uma referência visual consolidada para implementação.
+
+\section{Identidade Visual}
+
+A identidade visual do NOT FAT é construída sobre a cor primária verde (\texttt{\#1B5E20}), associada a saúde, equilíbrio e natureza. O mascote do aplicativo, uma versão estilizada e bem-humorada do personagem Homero Simpson, foi escolhido para transmitir leveza e proximidade com o usuário, reduzindo a frieza comum em aplicativos de saúde.
+
+\section{Fluxo de Navegação}
+
+A aplicação web adota uma arquitetura de navegação baseada em React Router DOM, com rotas declarativas que mapeiam URLs a componentes de página. A interface conta com uma barra lateral (\textit{sidebar}) de navegação no layout principal, permitindo ao usuário alternar entre as seções do sistema (Dashboard, Água e Perfil) sem recarregamento de página, em conformidade com o paradigma de Single Page Application (SPA).
+
+\section{Telas Prototipadas}
+
+O protótipo desenvolvido no Figma contemplou as seguintes telas:
+
+\begin{itemize}
+    \item \textbf{Tela de Login} (\texttt{/login}) — autenticação com Google OAuth;
+    \item \textbf{Dashboard} (\texttt{/}) — área de refeições diárias com blocos expansíveis e adição de alimentos;
+    \item \textbf{Controle de Água} (\texttt{/agua}) — registro de hidratação com indicador de progresso e histórico;
+    \item \textbf{Perfil} (\texttt{/profile}) — visualização e edição dos dados pessoais do usuário;
+    \item \textbf{Editar Perfil} (\texttt{/editar-perfil}) — formulário de atualização de dados com sincronização ao banco de dados.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagens/mockup.png}
+    \caption{Visão geral do mockup — NOT FAT Web}
+    \label{fig:mockup_geral}
+\end{figure}
