@@ -110,11 +110,11 @@
 
 \vspace{3cm}
 
-{\Huge \textbf{DOCUMENTAÇÃO BACK-END (NODE.JS)}}
+{\Huge \textbf{DOCUMENTAÇÃO FRONT-END (REACT.JS)}}
 
 \vspace{1cm}
 
-{\Large Desenvolvimento do Back-end para o projeto do site Not Fat}
+{\Large Desenvolvimento do barra de navegação do site Not Fat}
 
 \vspace{3cm}
 
@@ -146,73 +146,53 @@ Maceió - AL\\
 
 \chapter*{Resumo}
 
-Este código é a API do Back-End do sistema, desenvolvida em Node.js com o Express. A função dele é atuar como o servidor que liga o aplicativo (Front-End) ao banco de dados MySQL de um jeito seguro.
-
-Basicamente, o código gerencia três partes principais do projeto:
-
-Autenticação: O login é feito integrando com a conta do Google. O código valida o acesso da pessoa e, se for o primeiro acesso dela no app, já cria o cadastro no banco de dados automaticamente.
-
-Diário Alimentar: É a parte que controla as refeições. A API possui rotas para buscar a lista de alimentos disponíveis, salvar o que o usuário comeu (junto com a quantidade exata) e apagar itens que ele tenha colocado por engano no prato.
-
-Água e Perfil: Controla o usuário em si. Permite que ele atualize seu nome no aplicativo e gerencia o consumo de água diário, salvando cada registro e calculando o histórico da semana.
-
-Para fazer tudo isso funcionar direito, o arquivo também configura a segurança básica. Ele usa variáveis de ambiente para esconder as senhas do banco de dados, libera as permissões corretas para o navegador não bloquear o app e gerencia a conexão com o banco para que o sistema responda mais rápido.
-
-
+Essa barra de navegação atua como o menu principal do aplicativo, permitindo que o usuário transite fluidamente entre as telas de Início, Água e Perfil sem a necessidade de recarregar a página. Ela possui um design responsivo que se adapta ao dispositivo utilizado, fixando-se no topo da tela em celulares e atuando como uma barra lateral permanente à esquerda em computadores. Além da sua função de direcionamento, o componente identifica ativamente a URL atual do navegador para destacar visualmente a opção correspondente no menu, mostrando onde a pessoa está. Por fim, a barra se conecta ao sistema de autenticação para puxar os dados do usuário, exibindo o seu nome e o botão de sair da conta de maneira totalmente condicional, ou seja, esses elementos só ficam visíveis quando ocorre o acesso específico à página de edição do perfil.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%                 Funções do Back-End              %%
+%%           Funções da barra de navegação         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Funções do Back-End}
+\chapter{Funções da barra de navegação}
 
-\section{Configurações Iniciais e Dependências}
+\section{Importações (Linhas 1 a 3)}
 
-require(): Importa ferramentas e arquivos para o projeto. Funciona como a base para adicionar funcionalidades externas ao código.
+import { Link, useLocation } (Linha 1): Traz as ferramentas do React Router. O componente usa isso para permitir a troca de páginas e ler a URL atual da aplicação.
 
-config(): Carrega variáveis secretas (como senhas do banco de dados) de um arquivo seguro, garantindo que informações sensíveis não fiquem visíveis no código.
+import { Home, User... } (Linha 2): Importa a biblioteca de ícones lucide-react para ilustrar os botões do menu.
 
-express(): Cria o servidor principal da aplicação, responsável por receber as requisições do sistema e organizar o caminho dos dados.
+import { useAuth } (Linha 3): Importa o contexto de autenticação customizado do projeto para gerenciar os dados de login do usuário.
 
-OAuth2Client(): Faz a ponte com a API do Google, validando de forma segura os logins dos usuários através de tokens.
+\section{Função Principal e Captura de Estado (Linhas 5 a 13)}
 
-app.use(): Ativa os "filtros" do servidor, aplicando regras padronizadas para todas as requisições antes que elas cheguem às rotas finais.
+export function Navigation() (Linha 5): Inicia a declaração do componente principal de navegação.
 
-cors(): Regra de segurança que permite a comunicação entre o sistema visual (Front-End) e o servidor (Back-End), evitando que o navegador bloqueie os acessos.
+const { user, signout } (Linha 6): Extrai os dados do usuário autenticado e a função de logout vindos do contexto de autenticação.
 
-express.json(): Traduz os dados enviados pelo usuário para um formato estruturado, permitindo que o sistema consiga ler e manipular as informações facilmente.
+const location (Linha 7): Armazena o objeto da rota atual do navegador.
 
-mysql.createPool(): Mantém várias conexões abertas com o banco de dados. Isso agiliza a resposta do sistema e evita travamentos quando várias pessoas acessam o app ao mesmo tempo.
+const isProfilePage e const isEditProfilePage (Linhas 8 a 13): Declaram variáveis booleanas que verificam ativamente se o caminho da URL (location.pathname) corresponde às páginas de perfil ou edição, incluindo possíveis sub-rotas.
 
-\section{Rotas e Regras de Negócio}
+\section{Lógica da Aba Ativa (Linhas 15 a 20)}
 
-respondServerError: Função de proteção. Ela oculta erros internos complexos e devolve uma mensagem simples ao usuário, evitando o vazamento de detalhes técnicos do servidor.
+let abaAtiva = "inicio" (Linha 15): Define a aba padrão que deve aparecer destacada.
 
-POST /login: Rota de entrada e cadastro. Valida o acesso pelo Google e verifica o banco de dados: se for um usuário novo, cria a conta automaticamente; se já existir, apenas libera a entrada.
+if (isProfilePage || isEditProfilePage) (Linhas 16 a 20): Estrutura condicional que avalia as variáveis de rota declaradas anteriormente. Se a URL indicar o perfil ou a página de água, ela reatribui o valor de abaAtiva para refletir a localização exata do usuário.
 
-POST /adicionar: Rota de diário alimentar. Grava qual alimento o usuário escolheu, a refeição exata e a quantidade consumida.
+\section{Estilização Dinâmica (Linhas 22 a 27)}
 
-GET /alimentos: Rota de catálogo. Busca a lista completa de comidas cadastradas no sistema para preencher os menus de seleção do aplicativo.
+const itemClass = (ativa) => (Linha 22): Declara uma função auxiliar de estilo (arrow function). Ela recebe o nome do item do menu como parâmetro e compara com o valor atual de abaAtiva. Dependendo do resultado, ela retorna a string de classes correta do Tailwind CSS, aplicando o fundo translúcido e a sombra para o botão ativo, ou os efeitos de "hover" para os botões inativos.
 
-GET /usuario/:idUsuario: Rota de consulta de perfil. Puxa os dados básicos de um usuário (como nome e e-mail) utilizando apenas o código de identificação dele.
+\section{Estrutura Visual e Renderização Condicional (Linhas 29 a 88)}
 
-GET /refeicao/:idUsuario/:idRefeicao: Rota de consolidação de prato. Lista tudo o que foi consumido em uma refeição e, de forma inteligente, já soma as quantidades de alimentos registrados repetidamente.
+return (...) (Linha 29): Inicia a renderização do JSX (a interface gráfica).
 
-DELETE /refeicao/.../:idAlimento: Rota de correção. Permite apagar do banco de dados um alimento específico que foi adicionado por engano a uma refeição.
+<aside id="navigation"> (Linha 30): Define o container semântico principal da barra lateral, contendo as classes responsáveis pelo comportamento responsivo (menu no topo em telas pequenas, barra lateral em telas grandes).
 
-PUT /usuario/:idUsuario: Rota de edição de perfil. Atualiza as informações cadastrais do usuário, permitindo a troca do nome registrado no sistema.
+<nav> (Linha 50): Inicia o agrupamento semântico dos links de navegação, onde o componente chama o <Link> e a função itemClass para cada opção do menu.
 
-POST /agua: Rota de hidratação. Registra o consumo de água do usuário no momento da ação, anotando a quantidade exata em mililitros.
+{user \&\& isEditProfilePage \&\& (...) } (Linha 69): Inicia um bloco de renderização condicional. O código avalia essas condições lógicas antes de decidir desenhar o painel do usuário no DOM.
 
-GET /agua/:idUsuario: Rota de histórico e gráficos. Calcula o volume total de água consumido no dia atual e traz o levantamento dos dias anteriores para acompanhamento.
-
-\section{Inicialização do Servidor}
-process.env.PORT || 3000: Definição da porta de rede. O sistema tenta identificar automaticamente a porta configurada pelo ambiente de hospedagem (através das variáveis de ambiente). Caso não exista uma configuração prévia, ele adota a porta 3000 como o padrão seguro para rodar localmente.
-
-app.listen(): Execução do servidor. É o comando que efetivamente liga o sistema e o coloca "no ar". Ele instrui a aplicação a ficar aguardando requisições na porta definida, permitindo receber conexões de qualquer interface de rede (regra definida pelo IP 0.0.0.0). Por fim, exibe uma mensagem de confirmação no terminal indicando que a API foi iniciada com sucesso.
-
-
-
+<button onClick={() => signout()}> (Linha 74): Declara o botão de ação final dentro do bloco condicional, atrelando a função de encerramento de sessão ao evento de clique.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                    FIM                          %%
