@@ -87,7 +87,7 @@ export function Navigation() {
             onClick={() => signout()}
             className={
               itemClass("sair da conta") +
-              " mt-3 w-full justify-center border border-white/10 bg-[#1f734] hover:bg-red-500/20"
+              " mt-3 w-full justify-center border border-white/10 bg-[#1f7345] hover:bg-red-500/20"
             }
           >
             <LogOut className="h-5 w-5" />

@@ -1,0 +1,215 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PROJETO CÓDIGOS DE ALTA PERFORMANCE - WEB
+%% UNINASSAU - CIÊNCIA DA COMPUTAÇÃO
+%% MODELO COMPLETO ABNTEX2 - OVERLEAF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+    12pt,
+    oneside,
+    openright,
+    a4paper,
+    english,
+    brazil
+]{abntex2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  PACOTES                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%             CONFIGURAÇÕES GERAIS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\OnehalfSpacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%              CAMINHO DAS IMAGENS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{Imagem/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         REMOVE PÁGINAS EM BRANCO                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\patchcmd{\chapter}
+{\if@openright\cleardoublepage\else\clearpage\fi}
+{\clearpage}{}{}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%          CONFIGURAÇÃO DE CÓDIGOS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{green},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{black},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  INÍCIO                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    CAPA                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+\vspace{1cm}
+
+{\large \textbf{CENTRO UNIVERSITÁRIO MAURÍCIO DE NASSAU}}
+
+\vspace{0.3cm}
+
+{\large CURSO DE CIÊNCIA DA COMPUTAÇÃO}
+
+\vspace{3cm}
+
+{\Huge \textbf{DOCUMENTAÇÃO DE COMPONENTES REUTILIZÁVEIS E INTERFACES DE SOBREPOSIÇÃO}}
+
+\vspace{1cm}
+
+{\Large Desenvolvimento do Componente Modal de Escopo Global para o projeto do site Not Fat}
+
+\vspace{3cm}
+
+\textbf{Responsável} \\
+Eduardo Felipe da Silva Gomes - 01832424\\
+
+\vfill
+
+Disciplina: Códigos de Alta Performance - Web\\
+Professor(a): Anderlan Henrique Batista Siqueira
+
+\vspace{2cm}
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    RESUMO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Resumo}
+
+Este módulo compreende a especificação técnica, arquitetura de renderização condicional e a engenharia de interface do componente global \texttt{Modal} utilizado no ecossistema Not Fat. Desenvolvido sob o paradigma de componentes reutilizáveis em React.js, a estrutura funciona como um contêiner agnóstico de conteúdo (\textit{Wrapper}), capaz de interceptar o fluxo visual padrão para exibir formulários, listagens e confirmações prioritárias sem alterar o estado de roteamento da aplicação.
+
+A principal função deste componente é abstrair a complexidade de posicionamento em camadas (\textit{Z-Index}) e mascaramento de fundo (\textit{Backdrop Overlay}), expondo uma API limpa baseada em propriedades (\textit{Props}) para controle de ciclo de vida e injeção dinâmica de elementos filhos (\textit{children}). O visual, implementado com classes utilitárias Tailwind CSS, assegura alto desempenho estético e consistência em telas de diferentes proporções.
+
+Basicamente, as características fundamentais do componente subdividem-se em:
+
+- \textbf{Renderização de Curto-Circuito}: Avaliação lógica imediata do estado de visibilidade para prevenção de alocação de nós desnecessários na árvore do DOM virtual.
+
+- \textbf{Composição Dinâmica Polymorphic}: Capacidade de encapsular qualquer subestrutura de código sem necessidade de reconfiguração interna.
+
+- \textbf{Gerenciamento de Overflow e Contenção}: Tratamento responsivo e restrição de altura máxima para garantir a rolagem isolada de conteúdos extensos.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            Estrutura e Fluxo do Componente      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Arquitetura e Composição Externa}
+
+\section{Mecanismo de Renderização Condicional (Early Return)}
+
+Para otimizar o desempenho de renderização da aplicação Web, o componente implementa uma barreira lógica de curto-circuito (\textit{Early Return}) logo na primeira linha de sua execução:
+
+\begin{lstlisting}[language=JavaScript]
+if (!isOpen) return null;
+\end{lstlisting}
+
+Se a propriedade booleana \texttt{isOpen} for avaliada como falsa pelo interpretador, a função é imediatamente interrompida, retornando \texttt{null}. Esta abordagem impede que o interpretador do React processe os nós subsequentes do JSX, economizando ciclos de processamento de CPU e evitando a poluição do \textit{Document Object Model} (DOM) real com elementos ocultos.
+
+\section{Interface de Propriedades (API do Componente)}
+
+O componente adota o padrão de desestruturação de argumentos do JavaScript para expor um contrato explícito com os desenvolvedores que o consomem, conforme detalhado na tabela abaixo:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4} 
+\begin{tabular}{|p{3.0cm}|p{2.5cm}|p{9.2cm}|}
+\hline
+\textbf{Propriedade}& \textbf{Tipo de Dado}& \textbf{Finalidade Operacional no Sistema}\\ \hline
+\texttt{isOpen} & Booleano & Determina se o modal deve ser injetado na árvore de renderização ativa. \\ \hline
+\texttt{onClose} & Função & Função de retorno (\textit{callback}) responsável por alterar o estado de visibilidade no componente pai. \\ \hline
+\texttt{title} & String & Texto de cabeçalho dinâmico utilizado para contextualizar o propósito da tela de diálogo. \\ \hline
+\texttt{children} & ReactNode & Nó genérico contendo os elementos filhos que serão posicionados na área útil do contêiner. \\ \hline
+\end{tabular}
+\caption{Mapeamento da API de Entrada do Componente Modal}
+\label{tab:props_modal}
+\end{table}
+
+\section{Engenharia Visuall e Empilhamento (Tailwind CSS)}
+
+O layout do componente utiliza uma estratégia de posicionamento absoluto em camadas para sobrepor-se ao conteúdo regular da aplicação. As principais técnicas empregadas incluem:
+
+\begin{itemize}
+    \item \textbf{Mascaramento de Fundo (\textit{Backdrop Layer})}: A classe \texttt{fixed inset-0} expande o contêiner externo por toda a extensão útil da janela do navegador. O fundo utiliza opacidade regulada (\texttt{bg-black/60}) para isolar visualmente a interface em segundo plano, aumentando o foco cognitivo no modal.
+    \item \textbf{Priorização de Camadas}: O uso explícito de \texttt{z-50} garante que nenhum elemento flutuante da aplicação (como barras de navegação ou menus) seja renderizado acima da caixa de diálogo.
+    \item \textbf{Restrição de Altura e Rolagem Segura}: A área destinada à exibição dos elementos filhos (\texttt{children}) é delimitada pela classe \texttt{max-h-[60vh]} combinada com \texttt{overflow-y-auto}. Isso restringe a altura útil a exatamente $60\%$ da altura da janela (\textit{Viewport Height}), ativando uma barra de rolagem vertical interna caso o conteúdo extrapole esse limite físico, prevenindo quebras no layout global da tela.
+\end{itemize}
+
+\section{Fluxo de Controle e Eventos}
+
+O encerramento do modal é delegado de volta ao componente pai através do acionamento do evento de clique estruturado no botão superior da interface:
+
+\begin{lstlisting}[language=JavaScript]
+onClick={onClose}
+\end{lstlisting}
+
+Esta arquitetura segue o princípio do fluxo de dados unidirecional do React (\textit{Uplifting State}), onde o componente filho apenas sinaliza a intenção de fechamento, permitindo que o estado de controle permaneça centralizado na lógica de negócios principal (como ocorre no gerenciamento de porções do \texttt{CardInformativo}).
+
+\vfill
+
+\end{document}
