@@ -1,0 +1,222 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PROJETO CÓDIGOS DE ALTA PERFORMANCE - WEB
+%% UNINASSAU - CIÊNCIA DA COMPUTAÇÃO
+%% MODELO COMPLETO ABNTEX2 - OVERLEAF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+    12pt,
+    oneside,
+    openright,
+    a4paper,
+    english,
+    brazil
+]{abntex2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  PACOTES                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            CONFIGURAÇÕES GERAIS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\OnehalfSpacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%          CAMINHO DAS IMAGENS                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{Imagens/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%        REMOVE PÁGINAS EM BRANCO                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\patchcmd{\chapter}
+{\if@openright\cleardoublepage\else\clearpage\fi}
+{\clearpage}{}{}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         CONFIGURAÇÃO DE CÓDIGOS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{green},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{black},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  INÍCIO                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    CAPA                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+\vspace{1cm}
+
+{\large \textbf{CENTRO UNIVERSITÁRIO MAURÍCIO DE NASSAU}}
+
+\vspace{0.3cm}
+
+{\large CURSO DE CIÊNCIA DA COMPUTAÇÃO}
+
+\vspace{3cm}
+
+{\Huge \textbf{DOCUMENTAÇÃO FRONT-END (REACT.JS)}}
+
+\vspace{1cm}
+
+{\Large Desenvolvimento da tela de editar perfil do site Not Fat}
+
+\vspace{3cm}
+
+\textbf{Responsável}
+
+
+João Carlos Oliveira da Silva - 01806272\\
+
+
+
+\vfill
+
+Disciplina: Códigos de Alta Performance - Web\\
+Professor(a): Anderlan Henrique Batista Siqueira
+
+\vspace{2cm}
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    RESUMO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Resumo}
+
+Essa tela é o Painel de Edição de Perfil do usuário. Quando ela é aberta, faz uma conexão com o servidor para buscar os dados mais recentes (nome e e-mail). Na interface, o usuário pode alterar o seu nome completo, mas o e-mail é exibido de forma bloqueada (apenas leitura) por questões de regra de negócio ou segurança. Ao finalizar as edições e clicar em "Salvar", a tela envia o novo nome para o banco de dados, atualiza as informações locais (no navegador e no contexto da aplicação) e redireciona o usuário de volta para a sua página de perfil.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         FUNCÕES DA TELA DE EDITAR PERFIL        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Funções da tela de editar perfil}
+
+\section{Estados e Ferramentas (Linhas 7 a 13)}
+O componente começa preparando tudo o que precisa para funcionar:
+
+useState: Cria variáveis de estado para guardar o que está sendo digitado.
+
+nome: Guarda o valor em tempo real enquanto o usuário digita no campo de texto.
+
+nomeSalvo: Guarda o nome confirmado para ser exibido no "cartão" de apresentação logo acima do formulário.
+
+email: Guarda o e-mail do usuário (que não será alterado).
+
+useNavigate: Ferramenta do React Router para redirecionar o usuário para outra página (como o botão "Cancelar" ou após salvar com sucesso).
+
+useAuth: Traz a função updateUser, que serve para avisar ao resto do aplicativo que o nome do usuário mudou, sem precisar recarregar o site.
+
+\section{Carregamento dos Dados com useEffect (Linhas 15 a 52)}
+
+Este bloco roda automaticamente apenas uma vez, assim que a tela é aberta.
+
+Ele pega os dados temporários do usuário no localStorage (armazenamento do navegador).
+
+Em seguida, faz uma requisição (fetch) para o seu servidor backend (http://localhost:3000/usuario/...) pedindo os dados mais atualizados do banco de dados.
+
+Se a API responder com sucesso (response.ok): Ele preenche os estados (nome, email, etc.) com os dados do banco e já aproveita para atualizar o localStorage para manter tudo sincronizado.
+
+Se a API falhar (cair no catch): Ele usa os dados antigos que já estavam no localStorage como um plano B, garantindo que a tela não fique em branco.
+
+\section{Função de Salvamento handleSave (Linhas 54 a 83)}
+Esta função é acionada quando o usuário clica em "Salvar alterações".
+
+Ela monta uma requisição do tipo PUT (usada para atualizações) e envia o novo\_nome em formato JSON para o servidor.
+
+Se o servidor aceitar a mudança (response.ok):
+
+Cria um objeto usuarioAtualizado com o novo nome.
+
+Atualiza o estado global da aplicação (updateUser).
+
+Atualiza o armazenamento do navegador (localStorage).
+
+Redireciona o usuário de volta para a tela /profile usando o Maps.
+
+Se der erro: Exibe um alert informando ao usuário que não foi possível salvar ou conectar ao servidor.
+
+\section{Estrutura Visual (Interface JSX)}
+
+A partir da linha 84 (return), temos o desenho da interface usando Tailwind CSS. A tela é dividida estrategicamente:
+
+Cabeçalho e Botão Voltar: Um link no topo com o ícone ChevronLeft que permite voltar ao perfil rapidamente.
+
+Cartão de Resumo do Usuário: Uma área que mostra um avatar verde e os dados atuais do usuário ({nomeSalvo} e {email}). Aqui, há um aviso visual com um cadeado (<Lock />) avisando que o e-mail é fixo.
+
+Campos de Formulário (Inputs):
+
+Nome: O código traz uma melhoria de acessibilidade ligando a etiqueta (<label htmlFor="input-nome">) diretamente ao campo de digitação (<input id="input-nome">). O valor desse campo é atrelado ao estado nome e atualizado com o onChange.
+
+E-mail: Um campo de input desativado (disabled), com opacidade reduzida e cursor de "não permitido" (cursor-not-allowed) para reforçar que não é editável.
+
+Botões de Ação: O rodapé do formulário contém o botão de Cancelar (que usa Maps para voltar) e o botão de Salvar alterações, que chama a função handleSave explicada no item 3.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    FIM                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

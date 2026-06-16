@@ -1,0 +1,190 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PROJETO CÓDIGOS DE ALTA PERFORMANCE - WEB
+%% UNINASSAU - CIÊNCIA DA COMPUTAÇÃO
+%% MODELO COMPLETO ABNTEX2 - OVERLEAF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+    12pt,
+    oneside,
+    openright,
+    a4paper,
+    english,
+    brazil
+]{abntex2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  PACOTES                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            CONFIGURAÇÕES GERAIS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\OnehalfSpacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%          CAMINHO DAS IMAGENS                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{Imagens/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%        REMOVE PÁGINAS EM BRANCO                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\patchcmd{\chapter}
+{\if@openright\cleardoublepage\else\clearpage\fi}
+{\clearpage}{}{}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         CONFIGURAÇÃO DE CÓDIGOS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{green},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{black},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  INÍCIO                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    CAPA                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+\vspace{1cm}
+
+{\large \textbf{CENTRO UNIVERSITÁRIO MAURÍCIO DE NASSAU}}
+
+\vspace{0.3cm}
+
+{\large CURSO DE CIÊNCIA DA COMPUTAÇÃO}
+
+\vspace{3cm}
+
+{\Huge \textbf{DOCUMENTAÇÃO SERVIDOR (AIVEN)}}
+
+\vspace{1cm}
+
+{\Large Ligação do back-end com o banco de dados através do servidor Aiven}
+
+\vspace{3cm}
+
+\textbf{Responsável}
+
+
+João Carlos Oliveira da Silva - 01806272\\
+
+
+
+\vfill
+
+Disciplina: Códigos de Alta Performance - Web\\
+Professor(a): Anderlan Henrique Batista Siqueira
+
+\vspace{2cm}
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    RESUMO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Resumo}
+Para o armazenamento e gerenciamento dos dados da aplicação, utilizamos uma instância de banco de dados relacional gerenciada pela plataforma Aiven. Essa escolha garante alta disponibilidade, segurança e facilidade na manutenção da infraestrutura em nuvem.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                 SERVIDOR AIVEN                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Servidor Aiven}
+
+\section{Especificações Técnicas da Instância}
+Abaixo estão os dados principais de conexão e as configurações do servidor provisionado:
+
+Sistema Gerenciador (SGBD): MySQL
+
+Host: banco-mysql-08-projetomobilecoding-87ae.c.aivencloud.com
+
+Porta: 18252
+
+Nome do Banco de Dados: defaultdb
+
+Usuário Administrador: avnadmin
+
+Modo SSL: REQUIRED
+
+\section{Segurança e Autenticação}
+
+
+Visando as melhores práticas de segurança da informação, a senha de acesso ao banco de dados não é exposta no código-fonte. Toda a comunicação da aplicação web com o servidor do Aiven é feita através de uma Connection URI (URI de Serviço), injetada no sistema via variáveis de ambiente.
+
+Além disso, a plataforma exige o uso de SSL/TLS (ssl-mode=REQUIRED), garantindo que todo o tráfego de dados entre a nossa aplicação e o banco de dados seja rigorosamente criptografado.
+
+A string de conexão segue este formato padrão no arquivo de configuração do projeto:
+
+mysql://[USUARIO]:[SENHA]@banco-mysql-08-projetomobilecoding-87ae.c.aivencloud.com:18252/defaultdb?ssl-mode=REQUIRED
+
+Nota: A variável [SENHA] é substituída dinamicamente no ambiente de produção pelo certificado real do Aiven, mantendo a integridade e segurança do acesso.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    FIM                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

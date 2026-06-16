@@ -1,0 +1,201 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PROJETO CÓDIGOS DE ALTA PERFORMANCE - WEB
+%% UNINASSAU - CIÊNCIA DA COMPUTAÇÃO
+%% MODELO COMPLETO ABNTEX2 - OVERLEAF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+    12pt,
+    oneside,
+    openright,
+    a4paper,
+    english,
+    brazil
+]{abntex2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  PACOTES                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            CONFIGURAÇÕES GERAIS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\OnehalfSpacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%          CAMINHO DAS IMAGENS                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{Imagens/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%        REMOVE PÁGINAS EM BRANCO                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\patchcmd{\chapter}
+{\if@openright\cleardoublepage\else\clearpage\fi}
+{\clearpage}{}{}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         CONFIGURAÇÃO DE CÓDIGOS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{green},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{black},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  INÍCIO                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    CAPA                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+\vspace{1cm}
+
+{\large \textbf{CENTRO UNIVERSITÁRIO MAURÍCIO DE NASSAU}}
+
+\vspace{0.3cm}
+
+{\large CURSO DE CIÊNCIA DA COMPUTAÇÃO}
+
+\vspace{3cm}
+
+{\Huge \textbf{DOCUMENTAÇÃO FRONT-END (REACT.JS)}}
+
+\vspace{1cm}
+
+{\Large Desenvolvimento do barra de navegação do site Not Fat}
+
+\vspace{3cm}
+
+\textbf{Responsável}
+
+
+João Carlos Oliveira da Silva - 01806272\\
+
+
+
+\vfill
+
+Disciplina: Códigos de Alta Performance - Web\\
+Professor(a): Anderlan Henrique Batista Siqueira
+
+\vspace{2cm}
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    RESUMO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Resumo}
+
+Essa barra de navegação atua como o menu principal do aplicativo, permitindo que o usuário transite fluidamente entre as telas de Início, Água e Perfil sem a necessidade de recarregar a página. Ela possui um design responsivo que se adapta ao dispositivo utilizado, fixando-se no topo da tela em celulares e atuando como uma barra lateral permanente à esquerda em computadores. Além da sua função de direcionamento, o componente identifica ativamente a URL atual do navegador para destacar visualmente a opção correspondente no menu, mostrando onde a pessoa está. Por fim, a barra se conecta ao sistema de autenticação para puxar os dados do usuário, exibindo o seu nome e o botão de sair da conta de maneira totalmente condicional, ou seja, esses elementos só ficam visíveis quando ocorre o acesso específico à página de edição do perfil.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%           Funções da barra de navegação         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Funções da barra de navegação}
+
+\section{Importações (Linhas 1 a 3)}
+
+import { Link, useLocation } (Linha 1): Traz as ferramentas do React Router. O componente usa isso para permitir a troca de páginas e ler a URL atual da aplicação.
+
+import { Home, User... } (Linha 2): Importa a biblioteca de ícones lucide-react para ilustrar os botões do menu.
+
+import { useAuth } (Linha 3): Importa o contexto de autenticação customizado do projeto para gerenciar os dados de login do usuário.
+
+\section{Função Principal e Captura de Estado (Linhas 5 a 13)}
+
+export function Navigation() (Linha 5): Inicia a declaração do componente principal de navegação.
+
+const { user, signout } (Linha 6): Extrai os dados do usuário autenticado e a função de logout vindos do contexto de autenticação.
+
+const location (Linha 7): Armazena o objeto da rota atual do navegador.
+
+const isProfilePage e const isEditProfilePage (Linhas 8 a 13): Declaram variáveis booleanas que verificam ativamente se o caminho da URL (location.pathname) corresponde às páginas de perfil ou edição, incluindo possíveis sub-rotas.
+
+\section{Lógica da Aba Ativa (Linhas 15 a 20)}
+
+let abaAtiva = "inicio" (Linha 15): Define a aba padrão que deve aparecer destacada.
+
+if (isProfilePage || isEditProfilePage) (Linhas 16 a 20): Estrutura condicional que avalia as variáveis de rota declaradas anteriormente. Se a URL indicar o perfil ou a página de água, ela reatribui o valor de abaAtiva para refletir a localização exata do usuário.
+
+\section{Estilização Dinâmica (Linhas 22 a 27)}
+
+const itemClass = (ativa) => (Linha 22): Declara uma função auxiliar de estilo (arrow function). Ela recebe o nome do item do menu como parâmetro e compara com o valor atual de abaAtiva. Dependendo do resultado, ela retorna a string de classes correta do Tailwind CSS, aplicando o fundo translúcido e a sombra para o botão ativo, ou os efeitos de "hover" para os botões inativos.
+
+\section{Estrutura Visual e Renderização Condicional (Linhas 29 a 88)}
+
+return (...) (Linha 29): Inicia a renderização do JSX (a interface gráfica).
+
+<aside id="navigation"> (Linha 30): Define o container semântico principal da barra lateral, contendo as classes responsáveis pelo comportamento responsivo (menu no topo em telas pequenas, barra lateral em telas grandes).
+
+<nav> (Linha 50): Inicia o agrupamento semântico dos links de navegação, onde o componente chama o <Link> e a função itemClass para cada opção do menu.
+
+{user \&\& isEditProfilePage \&\& (...) } (Linha 69): Inicia um bloco de renderização condicional. O código avalia essas condições lógicas antes de decidir desenhar o painel do usuário no DOM.
+
+<button onClick={() => signout()}> (Linha 74): Declara o botão de ação final dentro do bloco condicional, atrelando a função de encerramento de sessão ao evento de clique.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    FIM                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
