@@ -475,3 +475,451 @@ O protótipo desenvolvido no Figma contemplou as seguintes telas:
     \caption{Visão geral do mockup — NOT FAT Web}
     \label{fig:mockup_geral}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  CRONOGRAMA                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Cronograma}
+
+\begin{table}[H]
+
+\centering
+
+\begin{tabular}{|p{6cm}|c|c|c|c|}
+
+\hline
+
+\textbf{Atividades em Maio} & \textbf{semana 1} & \textbf{semana 2} & \textbf{semana 3} & \textbf{semana 4} \\
+
+\hline
+
+Definição do Escopo e Objetivos & X &  &  &  \\
+\hline
+
+Levantamento de Requisitos & X & X &  &  \\
+\hline
+
+Criação das Interfaces (Figma) &  & X & X &  \\
+\hline
+
+Desenvolvimento Frontend &  & X & X &  \\
+\hline
+
+Desenvolvimento Backend (Node.js/Express) &  &  & X & X \\
+\hline
+
+Integração Banco de Dados (MySQL) &  &  & X & X \\
+\hline
+
+Configuração Docker e Docker Compose &  &  & X & X \\
+\hline
+
+Testes e Correções &  &  & X & X \\
+\hline
+
+Documentação (LaTeX) &  &  &  & X \\
+\hline
+
+Entrega Final &  &  &  & X \\
+\hline
+
+\end{tabular}
+
+\caption{Cronograma do Projeto}
+
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%               DESENVOLVIMENTO                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Desenvolvimento do Projeto}
+
+\section{Frontend}
+
+O frontend do NOT FAT foi desenvolvido integralmente em React 19, utilizando o Vite 8 como ferramenta de build e servidor de desenvolvimento. A arquitetura adota separação de responsabilidades em três camadas principais: \texttt{pages} (componentes de página vinculados às rotas), \texttt{componentes} (elementos reutilizáveis de interface) e \texttt{contexts} (gerenciamento de estado global).
+
+A navegação entre páginas foi implementada com a biblioteca \texttt{React Router DOM}, utilizando rotas declarativas que mapeiam URLs a componentes específicos sem recarregamento da página. A interface conta com uma barra lateral de navegação (\textit{sidebar}) nas páginas autenticadas, acessível em todas as seções do sistema.
+
+O estado global da aplicação — incluindo os dados do usuário autenticado e o token de sessão — foi gerenciado por meio da Context API do React, eliminando a necessidade de \textit{prop drilling} entre componentes. A estilização foi realizada integralmente com Tailwind CSS, garantindo responsividade e consistência visual. Ícones foram incorporados pelas bibliotecas Lucide React e Font Awesome.
+
+\section{Backend e API REST}
+
+O backend do NOT FAT foi implementado com Node.js e Express, responsável por expor os endpoints consumidos pelo frontend e implementar as regras de negócio e controle de acesso aos dados.
+
+A autenticação é delegada ao Google OAuth 2.0: o frontend autentica o usuário com o Google por meio da biblioteca \texttt{google-oauth-react} e envia o token ID ao backend, onde ele é validado com a \texttt{google-auth-library}. Após validação, o backend registra ou recupera o usuário no banco de dados e emite um JWT para autorização das requisições subsequentes.
+
+Os endpoints implementados cobrem as operações necessárias para: autenticação de usuários, gerenciamento de refeições e alimentos, registro e consulta de consumo hídrico, e gerenciamento do perfil do usuário. O middleware de CORS foi configurado para permitir a comunicação entre o frontend (porta 5173) e o backend (porta 3000) em ambiente de desenvolvimento.
+
+\section{Banco de Dados}
+
+O banco de dados MySQL foi modelado para suportar todas as funcionalidades do MVP, com as seguintes tabelas principais:
+
+\begin{itemize}
+    \item \texttt{usuarios} — dados de autenticação e perfil do usuário (ID Google, nome, e-mail);
+    \item \texttt{refeicoes} — blocos de refeição por data e usuário;
+    \item \texttt{alimentos} — banco de alimentos com informações nutricionais;
+    \item \texttt{itens\_refeicao} — relacionamento entre refeição e alimentos com a porção consumida;
+    \item \texttt{agua} — registros de consumo hídrico por usuário e data.
+\end{itemize}
+
+A conexão com o banco é configurada por variáveis de ambiente (\texttt{db\_host}, \texttt{db\_port}, \texttt{db\_user}, \texttt{db\_password}, \texttt{db\_database}), com suporte a SSL via certificado definido na variável \texttt{DB\_SSL\_CA}, permitindo conexão segura com bancos hospedados em nuvem.
+
+\section{Containerização com Docker}
+
+A aplicação foi containerizada com Docker, com arquivos \texttt{Dockerfile} individuais para o frontend e o backend. O \texttt{docker-compose.yml} na raiz do projeto orquestra a inicialização dos dois serviços com um único comando (\texttt{docker-compose up --build}), expondo o frontend em \texttt{http://localhost:5173} e o backend em \texttt{http://localhost:3000}. As variáveis de ambiente sensíveis são injetadas via arquivos \texttt{.env}, que não são versionados no repositório.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%               TELAS DO SISTEMA                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Telas do Sistema}
+
+\section{Tela de Login}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{imagens/tela1.png}
+    \caption{Tela de Login}
+    \label{fig:tela_login}
+\end{figure}
+
+\section{Tela Inicial (Dashboard)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{imagens/tela.2.png}
+    \caption{Tela Inicial -- Dashboard de Refeições}
+    \label{fig:tela_dashboard}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    TESTES                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Testes}
+
+\section{Testes Funcionais}
+
+Os testes funcionais foram realizados manualmente nos navegadores Google Chrome, Mozilla Firefox e Microsoft Edge, validando os fluxos principais da aplicação web. A tabela abaixo resume os casos de teste executados:
+
+\begin{longtable}{|p{1.5cm}|p{4cm}|p{4cm}|p{3cm}|}
+\hline
+\textbf{Caso} & \textbf{Ação} & \textbf{Resultado Esperado} & \textbf{Status} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Caso} & \textbf{Ação} & \textbf{Resultado Esperado} & \textbf{Status} \\
+\hline
+\endhead
+
+CT01 & Autenticar com conta Google & Usuário redirecionado ao dashboard com sessão ativa & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT02 & Cadastro automático de novo usuário & Conta criada no banco e acesso ao dashboard & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT03 & Adicionar alimento ao Café da Manhã & Alimento exibido no bloco com atualização dinâmica & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT04 & Remover alimento de uma refeição & Alimento removido e lista atualizada sem recarregamento & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT05 & Registrar consumo de água & Progresso atualizado na tela de hidratação & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT06 & Visualizar histórico de hidratação (7/15/30 dias) & Histórico exibido corretamente com comparativo de meta & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT07 & Editar nome no Perfil & Nome atualizado no banco e na sessão após confirmação & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT08 & Navegar entre todas as rotas & Navegação fluida via sidebar sem erros ou recarregamentos & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT09 & Iniciar aplicação com Docker Compose & Frontend e backend acessíveis nas portas 5173 e 3000 & \textcolor{green!60!black}{Aprovado} \\
+\hline
+CT10 & Acessar seção de informações nutricionais & Conteúdo sobre suplementação exibido corretamente & \textcolor{green!60!black}{Aprovado} \\
+\hline
+
+\end{longtable}
+
+\section{Testes de Usabilidade}
+
+Os testes de usabilidade foram conduzidos informalmente com membros da equipe simulando o perfil de usuário final nos navegadores Chrome e Firefox. Os pontos avaliados incluíram: clareza da barra lateral de navegação, legibilidade dos textos, responsividade nos diferentes tamanhos de tela e facilidade de adição e remoção de alimentos. O feedback coletado resultou em ajustes de contraste visual e reorganização de elementos no dashboard principal.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%           DIFICULDADES ENCONTRADAS              %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Dificuldades Encontradas}
+
+\begin{itemize}
+
+\item \textbf{Configuração do Google OAuth e validação de token}: A integração entre o fluxo de autenticação do Google no frontend e a validação do token no backend exigiu atenção à configuração correta das origens autorizadas no Google Cloud Console, além do tratamento adequado de erros de token expirado ou inválido;
+
+\item \textbf{Configuração de CORS entre frontend e backend}: A comunicação entre o servidor de desenvolvimento do Vite (porta 5173) e a API Express (porta 3000) demandou configuração cuidadosa do middleware de CORS para evitar bloqueios nas requisições, especialmente no envio de cabeçalhos de autorização;
+
+\item \textbf{Hospedagem do banco de dados e conexão SSL}: A configuração de um banco MySQL em nuvem com suporte a SSL apresentou desafios na definição correta das variáveis de ambiente e no carregamento do certificado CA, impactando o cronograma de integração entre backend e banco de dados;
+
+\item \textbf{Containerização com Docker Compose}: Garantir que os contêineres de frontend e backend inicializassem corretamente e se comunicassem em rede interna do Docker exigiu ajustes nas configurações de rede e nos arquivos \texttt{Dockerfile} de cada serviço.
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%           RESULTADOS E DISCUSSÃO                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Resultados e Discussão}
+
+O projeto NOT FAT atingiu os objetivos propostos para o MVP web, entregando uma aplicação \textit{full stack} funcional acessível via navegador, com as páginas planejadas (Login, Dashboard, Água, Perfil e Editar Perfil) e as funcionalidades principais operacionais: autenticação via Google OAuth, gerenciamento de refeições com adição e remoção dinâmica de alimentos, controle de hidratação com histórico e metas personalizadas, e gerenciamento de perfil do usuário.
+
+A persistência dos dados entre as sessões foi garantida pelo banco de dados MySQL com conexão segura via SSL, enquanto a autenticação baseada em Google OAuth 2.0 com JWT assegurou o acesso restrito de cada usuário às suas próprias informações. Todas as funcionalidades foram validadas com sucesso nos dez casos de teste planejados, executados nos principais navegadores modernos.
+
+A containerização com Docker e Docker Compose cumpriu o objetivo de padronização do ambiente, permitindo a inicialização completa da aplicação com um único comando, sem dependências de configuração manual do sistema hospedeiro além das variáveis de ambiente.
+
+Do ponto de vista acadêmico, o projeto proporcionou à equipe experiência prática com o ciclo completo de desenvolvimento de software web \textit{full stack}: desde o levantamento de requisitos e prototipação no Figma até a implementação, integração entre frontend e backend, containerização, testes e documentação técnica. A adoção do GitHub com padrão de commits definido contribuiu para uma colaboração mais organizada e rastreável ao longo das semanas de desenvolvimento.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                 CONCLUSÃO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Conclusão}
+
+O desenvolvimento do NOT FAT demonstrou que é possível, com planejamento adequado, uma equipe de estudantes entregar um produto web \textit{full stack} funcional dentro de um prazo acadêmico. A experiência reforçou a importância de etapas como definição de escopo, levantamento de requisitos e prototipação antes do início da implementação — lições aprendidas e consolidadas na prática ao longo do projeto.
+
+A aplicação entregue resolve o problema proposto: oferecer uma ferramenta simples, objetiva e em português para o monitoramento nutricional diário e o controle de hidratação, acessível diretamente pelo navegador sem necessidade de instalação. As funcionalidades implementadas cobrem o fluxo principal de uso com qualidade suficiente para demonstração e validação acadêmica, e a infraestrutura com Docker garante reprodutibilidade do ambiente de execução.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%             TRABALHOS FUTUROS                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Trabalhos Futuros}
+
+\begin{itemize}
+
+    \item \textbf{Transformar em Progressive Web App (PWA)}: Implementar um \textit{Service Worker} e manifesto Web App para permitir instalação da aplicação no dispositivo do usuário, funcionamento básico offline e notificações push diretamente pelo navegador;
+
+    \item \textbf{Deploy em plataformas de nuvem}: Publicar a aplicação em produção utilizando plataformas como Vercel ou Netlify para o frontend e Railway, Render ou AWS EC2 para o backend, com CI/CD automatizado via GitHub Actions;
+
+    \item \textbf{Integração com API pública de alimentos}: Substituir ou complementar o banco interno de alimentos pela API Open Food Facts, ampliando significativamente o catálogo disponível para o usuário;
+
+    \item \textbf{Sugestão inteligente de consumo calórico}: Implementar o cálculo de TDEE (Total Daily Energy Expenditure) com sugestão de teto calórico diário baseado no objetivo do usuário (emagrecimento, manutenção ou ganho de massa), utilizando os dados de perfil já disponíveis;
+
+    \item \textbf{Dashboard de evolução com gráficos}: Desenvolver visualizações gráficas do histórico nutricional e de hidratação utilizando bibliotecas como Recharts, permitindo ao usuário acompanhar sua evolução ao longo do tempo;
+
+    \item \textbf{Versão mobile com React Native}: Desenvolver uma versão do NOT FAT para dispositivos móveis reutilizando a lógica de negócio e os endpoints da API REST já existentes;
+
+    \item \textbf{Modo escuro}: Implementar alternância de tema claro/escuro na aplicação web, aproveitando as utilidades de tema do Tailwind CSS.
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            REPOSITÓRIO GITHUB                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Repositório do Projeto}
+
+\url{https://github.com/projeto-mobile-coding}
+
+\vspace{0.5cm}
+
+O repositório contém o código-fonte do frontend (React com Vite), o código-fonte do backend (Node.js/Express), os arquivos de configuração Docker (\texttt{Dockerfile} e \texttt{docker-compose.yml}), os arquivos de configuração do banco de dados MySQL e a documentação técnica do projeto.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                REFERÊNCIAS                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{99}
+
+\bibitem{react}
+META PLATFORMS, INC.
+\textbf{React -- A JavaScript library for building user interfaces}.
+2024.
+Disponível em: \url{https://react.dev}.
+Acesso em: maio 2026.
+
+\bibitem{vite}
+EVAN YOU et al.
+\textbf{Vite -- Next Generation Frontend Tooling}.
+2024.
+Disponível em: \url{https://vitejs.dev}.
+Acesso em: maio 2026.
+
+\bibitem{reactrouter}
+REMIX SOFTWARE.
+\textbf{React Router -- Declarative Routing for React}.
+2024.
+Disponível em: \url{https://reactrouter.com}.
+Acesso em: maio 2026.
+
+\bibitem{tailwind}
+TAILWIND LABS.
+\textbf{Tailwind CSS -- A utility-first CSS framework}.
+2024.
+Disponível em: \url{https://tailwindcss.com}.
+Acesso em: maio 2026.
+
+\bibitem{nodejs}
+OPENJS FOUNDATION.
+\textbf{Node.js Documentation}.
+2024.
+Disponível em: \url{https://nodejs.org/docs}.
+Acesso em: maio 2026.
+
+\bibitem{express}
+EXPRESSJS.
+\textbf{Express -- Fast, unopinionated, minimalist web framework for Node.js}.
+2024.
+Disponível em: \url{https://expressjs.com}.
+Acesso em: maio 2026.
+
+\bibitem{mysql}
+ORACLE CORPORATION.
+\textbf{MySQL 8.0 Reference Manual}.
+Oracle, 2024.
+Disponível em: \url{https://dev.mysql.com/doc/refman/8.0/en/}.
+Acesso em: maio 2026.
+
+\bibitem{docker}
+DOCKER, INC.
+\textbf{Docker Documentation}.
+2024.
+Disponível em: \url{https://docs.docker.com}.
+Acesso em: maio 2026.
+
+\bibitem{figma}
+FIGMA, INC.
+\textbf{Figma --- The Collaborative Interface Design Tool}.
+2024.
+Disponível em: \url{https://www.figma.com}.
+Acesso em: maio 2026.
+
+\bibitem{github}
+GITHUB, INC.
+\textbf{GitHub Documentation}.
+Microsoft, 2024.
+Disponível em: \url{https://docs.github.com}.
+Acesso em: maio 2026.
+
+\bibitem{fielding2000}
+FIELDING, Roy Thomas.
+\textbf{Architectural Styles and the Design of Network-based Software Architectures}.
+Tese (Doutorado) --- University of California, Irvine, 2000.
+Disponível em: \url{https://ics.uci.edu/~fielding/pubs/dissertation/top.htm}.
+Acesso em: maio 2026.
+
+\end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  APÊNDICES                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\chapter{Apêndice A --- Padrão de Commits Adotado}
+
+A equipe definiu o seguinte padrão de commits para o repositório GitHub do projeto:
+
+\begin{itemize}
+    \item \texttt{feat:} --- nova funcionalidade implementada;
+    \item \texttt{fix:} --- correção de bug;
+    \item \texttt{docs:} --- alterações na documentação;
+    \item \texttt{style:} --- ajustes de formatação e estilo visual;
+    \item \texttt{refactor:} --- refatoração de código sem mudança de comportamento;
+    \item \texttt{test:} --- adição ou correção de testes;
+    \item \texttt{chore:} --- tarefas de configuração e manutenção do projeto.
+\end{itemize}
+
+Exemplos de commits seguindo o padrão:
+\begin{lstlisting}[language=bash]
+feat: adiciona tela de controle de hidratacao com indicador de progresso
+feat: implementa historico de consumo hidrico dos ultimos 7, 15 e 30 dias
+fix: corrige calculo de meta hidrica ao atualizar nivel de atividade fisica
+style: ajusta contraste da sidebar para conformidade com acessibilidade
+chore: configura docker-compose para orquestracao de frontend e backend
+docs: adiciona documentacao dos endpoints da API REST no README
+\end{lstlisting}
+
+\chapter{Apêndice B --- Endpoints da API REST}
+
+Os endpoints implementados no backend Node.js/Express do NOT FAT estão listados abaixo:
+
+\begin{longtable}{|p{2cm}|p{5.5cm}|p{4.5cm}|}
+\hline
+\textbf{Método} & \textbf{Rota} & \textbf{Descrição} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Método} & \textbf{Rota} & \textbf{Descrição} \\
+\hline
+\endhead
+
+POST & /login & Autenticação via token Google OAuth \\
+\hline
+POST & /adicionar & Adicionar alimento a uma refeição \\
+\hline
+POST & /agua & Registrar consumo de água \\
+\hline
+GET & /alimentos & Listar alimentos disponíveis \\
+\hline
+GET & /usuario/:idUsuario & Buscar dados do usuário \\
+\hline
+GET & /refeicao/:idUsuario/:idRefeicao & Buscar alimentos de uma refeição \\
+\hline
+GET & /agua/:idUsuario & Buscar registros de consumo hídrico do usuário \\
+\hline
+PUT & /usuario/:idUsuario & Atualizar dados do perfil do usuário \\
+\hline
+DELETE & /refeicao/:idUsuario/:idRefeicao/:idAlimento & Remover alimento de uma refeição \\
+\hline
+
+\end{longtable}
+
+\chapter{Apêndice C --- Rotas do Frontend}
+
+As rotas declaradas com React Router DOM no frontend do NOT FAT são:
+
+\begin{longtable}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Rota} & \textbf{Descrição} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Rota} & \textbf{Descrição} \\
+\hline
+\endhead
+
+\texttt{/login} & Tela de autenticação com Google OAuth \\
+\hline
+\texttt{/} & Dashboard principal com blocos de refeições diárias \\
+\hline
+\texttt{/agua} & Tela de controle de hidratação com histórico \\
+\hline
+\texttt{/profile} & Tela de visualização do perfil do usuário \\
+\hline
+\texttt{/editar-perfil} & Tela de edição dos dados do perfil \\
+\hline
+
+\end{longtable}
+
+\chapter{Apêndice D --- Variáveis de Ambiente}
+
+As variáveis de ambiente necessárias para execução do projeto estão descritas abaixo. Os arquivos \texttt{.env} não são versionados no repositório e devem ser criados localmente antes da execução.
+
+\textbf{Frontend} (\texttt{.env} na raiz do projeto):
+
+\begin{lstlisting}
+VITE_GOOGLE_CLIENT_ID=seu_client_id_google
+\end{lstlisting}
+
+\textbf{Backend} (\texttt{backend/.env}):
+
+\begin{lstlisting}
+db_host=endereco_do_banco
+db_port=porta_do_banco
+db_user=usuario_do_banco
+db_password=senha_do_banco
+db_database=nome_do_banco
+PORT=3000
+DB_SSL_CA=caminho_ou_conteudo_do_certificado_ssl
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    FIM                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
